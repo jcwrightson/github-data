@@ -1,4 +1,4 @@
-# graphql-github
+# gihub-data-visualisation
 
 This app uses data visualisation to compare data-points on github.
 
