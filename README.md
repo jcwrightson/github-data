@@ -1,5 +1,11 @@
 # graphql-github
 
+This app uses data visualisation to compare data-points on github.
+
+Include a `.env.local` file in the project root with a personal access token with public scope:
+
+`VUE_APP_GITHUB_TOKEN=xxxxxxxxxxxxxxxxx`
+
 ## Project setup
 ```
 npm install
