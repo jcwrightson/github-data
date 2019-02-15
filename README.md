@@ -1,4 +1,4 @@
-# gihub-data-visualisation
+# github-data-visualisation
 
 This app uses data visualisation to compare data-points on github.
 
