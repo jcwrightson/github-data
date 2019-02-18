@@ -6,7 +6,7 @@
 			<h1>Terms</h1>
 			<template v-for="(number, index) in comparisons">
 				<div :key="index">
-					<Search :searchType="searchType" v-on:result="handleResult" :index="index" />
+					<Search :searchType="searchType" :searchTerm="getSearchTerm(index)" v-on:result="handleResult" :index="index" />
 				</div>
 			</template>
 			<div class="buttons">
@@ -56,6 +56,7 @@ export default {
 	data(){
 		return{
 			searchType: 'REPOSITORY',
+			initialTerms: ['php', 'python', 'html', 'javascript', 'css', 'ruby'],
 			results: [],
 			comparisons: 2,
 			chart: {
@@ -81,6 +82,9 @@ export default {
 			}
 
 		},
+		getSearchTerm(index){
+			return this.initialTerms[index] || null
+		},
 		handleIncrement(){
 			this.comparisons++
 		},
@@ -97,6 +101,11 @@ export default {
 			this.chart = {...this.chart, type: e.currentTarget.value}
 		}
 
+	},
+	mounted(){
+		if(this.initialTerms.length){
+			this.comparisons = this.initialTerms.length
+		}
 	}
 }
 

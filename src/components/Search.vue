@@ -31,7 +31,8 @@ export default {
 	name: 'Search',
 	props:[
 		'searchType',
-		'index'
+		'index',
+		'searchTerm'
 	],
 	data(){
 		return{
@@ -109,6 +110,12 @@ export default {
 				},500)
 						
 			}
+		}
+	},
+	mounted(){
+		if(this.$props.searchTerm){
+			this.search = {...this.search, searchTerm: this.$props.searchTerm}
+			this.handleSearch()
 		}
 	}
 }
