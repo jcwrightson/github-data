@@ -4,71 +4,43 @@
 	
 	<template v-if="results.length">
 
-		<h1>Repositories</h1>
-
-		<!-- Bar -->
 		<svg xmlns="http://www.w3.org/2000/svg"
 			xmlns:xlink="http://www.w3.org/1999/xlink"
 			xmlns:ev="http://www.w3.org/2001/xml-events"
 			:width="`${chart.width}px`" :height="`${chart.height}px`">
 
 			<template v-for="(result, index) in sortByLargestResult">
-
-					<rect 
-						:key="index"
+				<g :key="index">
+					<rect class="rect"
+					
 						:width="`${getWidth()}px`" 
 						:height="`${getHeight(result)}px`" 
 						:fill="getGradiatedColor(result)" 
 						:y="`${getY(index, result)}px`" 
 						:x="`${getX(index)}px`">
 					</rect>
-				
-			</template>
-
-		</svg>
-
-		<!-- Value -->
-		<svg xmlns="http://www.w3.org/2000/svg"
-			xmlns:xlink="http://www.w3.org/1999/xlink"
-			xmlns:ev="http://www.w3.org/2001/xml-events"
-			:width="`${chart.width}px`" height="15px">
-
-			<template v-for="(result, index) in sortByLargestResult">
-
-					<text 
-						:key="index"
+					<text class="label"
+			
 						:width="`${getWidth()}px`" 
 						:height="`${getHeight(result)}px`" 
-						:fill="getGradiatedColor(result)" 
+						fill="black" 
 						:x="`${getX(index)}px`"
-						y="10">
+						:y="`${getY(index, result) - 5}px`">
 			
 						{{result.value}}
 					</text>
-				
-			</template>
 
-		</svg>
-
-
-		<!-- Label -->
-		<svg xmlns="http://www.w3.org/2000/svg"
-			xmlns:xlink="http://www.w3.org/1999/xlink"
-			xmlns:ev="http://www.w3.org/2001/xml-events"
-			:width="`${chart.width}px`" height="15px">
-
-			<template v-for="(result, index) in sortByLargestResult">
-
-					<text 
+					<text class="label"
 						:key="index"
 						:width="`${getWidth()}px`" 
 						:height="`${getHeight(result)}px`" 
-						:fill="getGradiatedColor(result)"
-						y="10" 
+						fill="black"
+						:y="chart.height + 20" 
 						:x="`${getX(index)}px`">
 			
 						{{result.query}}
 					</text>
+				</g>
 				
 			</template>
 
@@ -87,16 +59,7 @@
 <script>
 export default {
 	name: 'BarChart',
-	props: ['results'],
-	data(){
-		return{
-			chart: {
-				height: 600,
-				width: 800,
-				padding: 10
-			}
-		}
-	},
+	props: ['results', 'chart'],
 	computed: {
 		sortByLargestResult: function(){
 			if(this.results.length){
@@ -137,8 +100,14 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
+svg{
+	.label{
+		text-transform: uppercase;
+		font-family: monospace;
+	}
+}
 
 </style>
 

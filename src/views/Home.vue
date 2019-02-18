@@ -1,8 +1,9 @@
 <template>
 	<div class="home">
-
-		<!-- Input -->
+		
 		<div class="container search">
+
+			<!-- Input -->
 			<h1>Terms</h1>
 			<template v-for="(number, index) in comparisons">
 				<div :key="index">
@@ -16,24 +17,26 @@
 		</div>
 		
 		<div class="container results">
-			<!-- Output -->
-			
-				<template v-if="chart.type === 'bar'">
-					<BarChart :results="results"/>
-				</template>
 
-				<template v-if="chart.type === 'line'">
-					<LineChart :results="results"/>
-				</template>
+			<!-- Output -->
+			<template v-if="results.length">
+				<div class="row">
+					<h1>{{this.searchType}} Count</h1>
+					<select v-model="chart.type" v-on:change="handleChartType">
+						<option value="bar">Bar</option>
+						<option value="line">Line</option>	
+					</select>
+				</div>
+			</template>
 		
-				<template v-if="results.length">
-					<div>
-						<select v-model="chart.type" v-on:change="handleChartType">
-							<option value="bar">Bar</option>
-							<option value="line">Line</option>	
-						</select>
-					</div>
-				</template>
+			<template v-if="chart.type === 'bar'">
+				<BarChart :chart="chart" :results="results"/>
+			</template>
+
+			<template v-if="chart.type === 'line'">
+				<LineChart :chart="chart" :results="results"/>
+			</template>
+	
 		</div>
 			
 			
@@ -56,11 +59,18 @@ export default {
 	data(){
 		return{
 			searchType: 'REPOSITORY',
-			initialTerms: ['php', 'python', 'html', 'javascript', 'css', 'ruby'],
+			initialTerms: [],
+			sampleQueries: {
+				frontend: ['react', 'vue', 'angular', 'backbone', 'ember', 'knockout'],
+				backend: ['node', 'php', 'python', '.net', 'ruby on rails', 'go']
+			},
 			results: [],
 			comparisons: 2,
 			chart: {
 				type: 'bar',
+				height: 600,
+				width: 900,
+				padding: 10
 			}
 		}
 	},
@@ -102,10 +112,10 @@ export default {
 		}
 
 	},
-	mounted(){
-		if(this.initialTerms.length){
-			this.comparisons = this.initialTerms.length
-		}
+	created(){
+		this.initialTerms = this.sampleQueries.frontend
+		this.comparisons = this.initialTerms.length
+		
 	}
 }
 
@@ -120,9 +130,6 @@ export default {
 	justify-content: space-between;
 	width: 100vw;
 
-	h1{
-		margin-bottom: 3rem;
-	}
 }
 
 select{
@@ -173,8 +180,12 @@ select{
 		flex-basis: 85%;
 		flex-direction: column;
 		min-height: 100vh;
-		justify-content: space-evenly;
+		justify-content: center;
 		align-items: center;
+		
+		.row{
+			width: 900px;
+		}
 
 		h1{
 			text-align: center;
@@ -184,6 +195,9 @@ select{
 		.chart{
 			display: flex;
 			flex-direction: column;
+			background-color: #f2f2f2;
+			padding: 4rem 8rem;
+			margin: 2rem 0;
 		}
 
 		

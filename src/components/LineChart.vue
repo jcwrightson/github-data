@@ -4,20 +4,25 @@
 	
 	<template v-if="results.length">
 
-		<h1>Repositories</h1>
-
 		<!-- Line -->
 		<svg xmlns="http://www.w3.org/2000/svg"
 			xmlns:xlink="http://www.w3.org/1999/xlink"
 			xmlns:ev="http://www.w3.org/2001/xml-events"
 			:width="`${chart.width}px`" :height="`${chart.height}px`">
 
-			<polyline :points="getPolyPoints()" fill="white" stroke="cadetblue" stroke-width="2" />
+			<defs>
+				<linearGradient id="Gradient1" x1="0" y1="0" x2="100%" y2="0">
+					<stop offset="0%" stop-color="rgb(0, 204, 41)" />
+					<stop offset="100%" stop-color="rgb(101, 103, 101)" />
+				</linearGradient>
+			</defs>
+
+			<polyline :points="getPolyPoints()" fill="none" stroke="url(#Gradient1)" stroke-width="4" />
 
 			<template v-for="(point, index) in getPoints()">
 
 				<g :key="index" class="point">
-					<circle class="dot" :cx="point[0]" :cy="point[1]" r="4" stroke-width="8" fill="red" stroke="rgba(255,255,255,0)"></circle>
+					<circle class="dot" :cx="point[0]" :cy="point[1]" r="4" stroke-width="6" :fill="getGradiatedColor(sortByLargestResult[index])" stroke="rgba(255,255,255,0)"></circle>
 					<text class="label" :x="point[0] - 80" :y="point[1] + 35">{{sortByLargestResult[index].value}}</text>
 					<text class="label" :x="point[0] - 80" :y="point[1] + 20">{{sortByLargestResult[index].query}}</text>
 				</g>
@@ -38,16 +43,7 @@
 <script>
 export default {
 	name: 'LineChart',
-	props: ['results'],
-	data(){
-		return{
-			chart: {
-				height: 600,
-				width: 800,
-				padding: 10
-			}
-		}
-	},
+	props: ['results', 'chart'],
 	computed: {
 		sortByLargestResult: function(){
 			if(this.results.length){
@@ -64,12 +60,8 @@ export default {
 
 			let s = '' 
 
-			const arr =  [...this.sortByLargestResult.map((result, index) => {
-				return [this.getX(index), Math.abs(this.getHeight(result) - this.chart.height)]
-			})]
-
 			// SVG's polyline requires a string of format 'x,y x,y x,y...'
-			arr.map(coords => {
+			this.getPoints().map(coords => {
 				s = `${s}${coords[0]}, ${coords[1]} `
 			})
 
@@ -102,7 +94,7 @@ export default {
 		},
 		getGradiatedColor(result){
 			const proportion = this.chart.height / this.getHeight(result)
-			return `hsla(${10}, ${100 / proportion}%, 40%, 1)`
+			return `hsla(${132}, ${100 / proportion}%, 40%, 1)`
 		},
 	}
 }

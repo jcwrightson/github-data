@@ -13,6 +13,14 @@
     box-sizing: border-box;
   }
 
+  .row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
   html, body{
     margin: 0;
     padding: 0;
