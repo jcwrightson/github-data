@@ -17,7 +17,7 @@
 		
 		<div class="container results">
 			<!-- Output -->
-			<template v-if="results.length">
+			
 				<template v-if="chart.type === 'bar'">
 					<BarChart :results="results"/>
 				</template>
@@ -25,15 +25,17 @@
 				<template v-if="chart.type === 'line'">
 					<LineChart :results="results"/>
 				</template>
-			</template>
-
-			<div>
-				<select v-model="chart.type" v-on:change="handleChartType">
-					<option value="bar">Bar</option>
-					<option value="line">Line</option>	
-				</select>
-			</div>
+		
+				<template v-if="results.length">
+					<div>
+						<select v-model="chart.type" v-on:change="handleChartType">
+							<option value="bar">Bar</option>
+							<option value="line">Line</option>	
+						</select>
+					</div>
+				</template>
 		</div>
+			
 			
 	</div>
 </template>
@@ -179,6 +181,10 @@ select{
 	}
 
 	
+}
+
+svg{
+	overflow: visible;
 }
 
 

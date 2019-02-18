@@ -6,63 +6,23 @@
 
 		<h1>Repositories</h1>
 
-		<!-- Bar -->
+		<!-- Line -->
 		<svg xmlns="http://www.w3.org/2000/svg"
 			xmlns:xlink="http://www.w3.org/1999/xlink"
 			xmlns:ev="http://www.w3.org/2001/xml-events"
 			:width="`${chart.width}px`" :height="`${chart.height}px`">
 
-				<polyline :points="getPolyPoints()" fill="white" stroke="rgb(204, 34, 0)" stroke-width="2" />
-			
+			<polyline :points="getPolyPoints()" fill="white" stroke="cadetblue" stroke-width="2" />
 
-		</svg>
+			<template v-for="(point, index) in getPoints()">
 
-		<!-- Value -->
-		<svg xmlns="http://www.w3.org/2000/svg"
-			xmlns:xlink="http://www.w3.org/1999/xlink"
-			xmlns:ev="http://www.w3.org/2001/xml-events"
-			:width="`${chart.width}px`" height="15px">
-
-			<template v-for="(result, index) in sortByLargestResult">
-
-					<text 
-						:key="index"
-						:width="`${getWidth()}px`" 
-						:height="`${getHeight(result)}px`" 
-						:fill="getGradiatedColor(result)" 
-						:x="`${getX(index)}px`"
-						y="10" 
-						>
-			
-						{{result.value}}
-					</text>
+				<g :key="index" class="point">
+					<circle class="dot" :cx="point[0]" :cy="point[1]" r="4" stroke-width="8" fill="red" stroke="rgba(255,255,255,0)"></circle>
+					<text class="label" :x="point[0] - 80" :y="point[1] + 35">{{sortByLargestResult[index].value}}</text>
+					<text class="label" :x="point[0] - 80" :y="point[1] + 20">{{sortByLargestResult[index].query}}</text>
+				</g>
 				
 			</template>
-
-		</svg>
-
-
-		<!-- Label -->
-		<svg xmlns="http://www.w3.org/2000/svg"
-			xmlns:xlink="http://www.w3.org/1999/xlink"
-			xmlns:ev="http://www.w3.org/2001/xml-events"
-			:width="`${chart.width}px`" height="15px">
-
-			<template v-for="(result, index) in sortByLargestResult">
-
-					<text 
-						:key="index"
-						:width="`${getWidth()}px`" 
-						:height="`${getHeight(result)}px`" 
-						:fill="getGradiatedColor(result)"
-						y="10" 
-						:x="`${getX(index)}px`">
-			
-						{{result.query}}
-					</text>
-				
-			</template>
-
 		</svg>
 			
 	</template>
@@ -115,6 +75,11 @@ export default {
 
 			return s
 		},
+		getPoints(){
+			return[...this.sortByLargestResult.map((result, index) => {
+				return [this.getX(index), Math.abs(this.getHeight(result) - this.chart.height)]
+			})]
+		},
 		getWidth(){
 			return (this.chart.width / this.results.length) - this.chart.padding
 		},
@@ -150,6 +115,26 @@ export default {
 		flex-basis: 85%;
 		flex-direction: column;
 	}
+}
+
+.point:hover{
+
+
+	cursor: pointer;
+
+	.dot{
+		transition: all 200ms ease-in-out;
+		stroke: black;
+	}
+
+	.label{
+		// opacity: 1;
+	}
+}
+
+.label{
+	transition: all 200ms ease-in-out;
+	// opacity: 0;
 }
 </style>
 
