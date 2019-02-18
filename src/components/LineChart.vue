@@ -12,18 +12,8 @@
 			xmlns:ev="http://www.w3.org/2001/xml-events"
 			:width="`${chart.width}px`" :height="`${chart.height}px`">
 
-			<template v-for="(result, index) in sortByLargestResult">
-
-					<rect 
-						:key="index"
-						:width="`${getWidth()}px`" 
-						:height="`${getHeight(result)}px`" 
-						:fill="getGradiatedColor(result)" 
-						:y="`${getY(index, result)}px`" 
-						:x="`${getX(index)}px`">
-					</rect>
-				
-			</template>
+				<polyline :points="getPolyPoints()" fill="white" stroke="rgb(204, 34, 0)" stroke-width="2" />
+			
 
 		</svg>
 
@@ -41,7 +31,8 @@
 						:height="`${getHeight(result)}px`" 
 						:fill="getGradiatedColor(result)" 
 						:x="`${getX(index)}px`"
-						y="10">
+						y="10" 
+						>
 			
 						{{result.value}}
 					</text>
@@ -86,7 +77,7 @@
 
 <script>
 export default {
-	name: 'BarChart',
+	name: 'LineChart',
 	props: ['results'],
 	data(){
 		return{
@@ -109,6 +100,21 @@ export default {
 		}
 	},
 	methods:{
+		getPolyPoints(){
+
+			let s = '' 
+
+			const arr =  [...this.sortByLargestResult.map((result, index) => {
+				return [this.getX(index), Math.abs(this.getHeight(result) - this.chart.height)]
+			})]
+
+			// SVG's polyline requires a string of format 'x,y x,y x,y...'
+			arr.map(coords => {
+				s = `${s}${coords[0]}, ${coords[1]} `
+			})
+
+			return s
+		},
 		getWidth(){
 			return (this.chart.width / this.results.length) - this.chart.padding
 		},
@@ -121,7 +127,7 @@ export default {
 
 			const proportion = largestResult / result.value
 
-			return this.chart.height / proportion
+			return Math.floor(this.chart.height / proportion)
 		},
 		getX(index){
 			return (this.getWidth() + this.chart.padding) * index
@@ -131,7 +137,7 @@ export default {
 		},
 		getGradiatedColor(result){
 			const proportion = this.chart.height / this.getHeight(result)
-			return `hsla(${132}, ${100 / proportion}%, 40%, 1)`
+			return `hsla(${10}, ${100 / proportion}%, 40%, 1)`
 		},
 	}
 }
@@ -139,6 +145,11 @@ export default {
 
 <style lang="scss" scoped>
 
-
+.container{
+	&.results{
+		flex-basis: 85%;
+		flex-direction: column;
+	}
+}
 </style>
 

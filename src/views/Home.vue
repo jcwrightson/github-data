@@ -14,13 +14,26 @@
 				<button v-on:click="handleIncrement">+</button>
 			</div>
 		</div>
+		
+		<div class="container results">
+			<!-- Output -->
+			<template v-if="results.length">
+				<template v-if="chart.type === 'bar'">
+					<BarChart :results="results"/>
+				</template>
 
-		<!-- Output -->
-		<template v-if="results.length">
-			<template v-if="chartType === 'bar'">
-				<BarChart :results="results"/>
+				<template v-if="chart.type === 'line'">
+					<LineChart :results="results"/>
+				</template>
 			</template>
-		</template>
+
+			<div>
+				<select v-model="chart.type" v-on:change="handleChartType">
+					<option value="bar">Bar</option>
+					<option value="line">Line</option>	
+				</select>
+			</div>
+		</div>
 			
 	</div>
 </template>
@@ -29,19 +42,23 @@
 
 import Search from '@/components/Search'
 import BarChart from '@/components/BarChart'
+import LineChart from '@/components/LineChart'
 
 export default {
 	name: 'home',
 	components: {
 		Search,
-		BarChart
+		BarChart,
+		LineChart
 	},
 	data(){
 		return{
 			searchType: 'REPOSITORY',
-			chartType: 'bar',
 			results: [],
 			comparisons: 2,
+			chart: {
+				type: 'bar',
+			}
 		}
 	},
 	methods:{
@@ -74,6 +91,9 @@ export default {
 				}
 			}
 		},
+		handleChartType(e){
+			this.chart = {...this.chart, type: e.currentTarget.value}
+		}
 
 	}
 }
@@ -88,6 +108,14 @@ export default {
 	align-items: center;
 	justify-content: space-between;
 	width: 100vw;
+
+	h1{
+		margin-bottom: 3rem;
+	}
+}
+
+select{
+	padding: .5rem 2rem;
 }
 
 .container{
@@ -128,6 +156,26 @@ export default {
 				flex-basis: 50%;
 			}
 		}
+	}
+
+	&.results{
+		flex-basis: 85%;
+		flex-direction: column;
+		min-height: 100vh;
+		justify-content: space-evenly;
+		align-items: center;
+
+		h1{
+			text-align: center;
+		}
+		
+		
+		.chart{
+			display: flex;
+			flex-direction: column;
+		}
+
+		
 	}
 
 	
