@@ -5,6 +5,7 @@
       <!-- <router-link to="/about">About</router-link> -->
     </div>
     <router-view/>
+    <div class="madebywrightson">made by <a href="https://jcwrightson.com/">jcwrightson</a></div>
   </div>
 </template>
 
@@ -38,5 +39,15 @@
 
   h1{
     font-size: 1.5rem;
+  }
+
+  a, a:hover, a:visited{
+    color: inherit;
+  }
+
+  .madebywrightson{
+    position: absolute;
+    bottom: 15px;
+    right:15px;
   }
 </style>

@@ -11,15 +11,9 @@
 
 			<template v-for="(result, index) in sortByLargestResult">
 				<g :key="index">
-					<rect class="rect"
-					
-						:width="`${getWidth()}px`" 
-						:height="`${getHeight(result)}px`" 
-						:fill="getGradiatedColor(result)" 
-						:y="`${getY(index, result)}px`" 
-						:x="`${getX(index)}px`">
-					</rect>
-					<text class="label"
+
+					<rect class="rect" :width="`${getWidth()}px`" :fill="getGradiatedColor(result)"></rect>
+					<text class="label value"
 			
 						:width="`${getWidth()}px`" 
 						:height="`${getHeight(result)}px`" 
@@ -30,7 +24,7 @@
 						{{result.value}}
 					</text>
 
-					<text class="label"
+					<text class="label title"
 						:key="index"
 						:width="`${getWidth()}px`" 
 						:height="`${getHeight(result)}px`" 
@@ -57,6 +51,8 @@
 </template>
 
 <script>
+import { TweenMax } from "gsap";
+
 export default {
 	name: 'BarChart',
 	props: ['results', 'chart'],
@@ -105,9 +101,29 @@ export default {
 		},
 		getGradiatedColor(result){
 			const proportion = this.chart.height / this.getHeight(result)
-			return `hsla(180, 40% ,${80 / proportion}%, 1)`
-			// return `hsla(${132}, ${100 / proportion}%, 40%, 1)`
+			return `hsla(180, 40%, ${80/proportion}%, 1)`
 		},
+		animate(){
+			const bar = document.querySelectorAll('.rect')
+			const title = document.querySelectorAll('.label.title')
+			const value = document.querySelectorAll('.label.value')
+			
+			this.sortByLargestResult.map((result, index)=>{
+
+				TweenMax.to(bar[index], 1, {height: `${this.getHeight(result)}px`}).delay(.5)
+				TweenMax.to(bar[index], 1, {y: `${this.getY(index, result)}px`}).delay(.5)
+				TweenMax.to(bar[index], 1, {x: `${this.getX(index)}px`}).delay(.5)
+
+				TweenMax.to(title[index], 2, {opacity: 1}).delay(1)
+				TweenMax.to(value[index], 2, {opacity: 1}).delay(2)
+			})
+		}
+	},
+	mounted(){
+		this.animate()
+	},
+	updated(){
+		this.animate()
 	}
 }
 </script>
@@ -118,7 +134,9 @@ svg{
 	.label{
 		text-transform: uppercase;
 		font-family: monospace;
+		opacity: 0;
 	}
+
 }
 
 </style>

@@ -7,8 +7,6 @@
 
 			<div class="block">
 
-			<h1 class="name">Github Data</h1>
-
 			<h1>Terms</h1>
 
 				<template v-for="(term, index) in queries[search.selectedQuery].terms">
@@ -40,6 +38,7 @@
 				<select v-model="search.searchType" v-on:change="handleSelectType">
 					<option  v-for="(type, index) in search.searchTypes" :value="type" :key="index">{{type}}</option>
 				</select>
+				<h1 class="name">Github Data</h1>
 				<select v-model="chart.type" v-on:change="handleChartType">
 					<option value="bar">Bar</option>
 					<option value="line">Line</option>	
@@ -146,8 +145,8 @@ export default {
 			if(this.queries[this.search.selectedQuery].terms.length > 1){
 				this.queries[this.search.selectedQuery].terms.pop()
 				
-				if(this.search.results.length > this.queries[this.search.selectedQuery].terms.length){
-					this.search.results.pop()
+				if(this.queries[this.search.selectedQuery].results.length > this.queries[this.search.selectedQuery].terms.length){
+					this.queries[this.search.selectedQuery].results.pop()
 				}
 				
 			}
@@ -158,6 +157,7 @@ export default {
 		handleSelectQuery(e){
 
 			this.search = {...this.search, selectedQuery: e.currentTarget.value}
+			this.queries[e.currentTarget.value].results = []
 		},
 		handleSelectType(e){
 
@@ -179,7 +179,7 @@ export default {
 
 h1.name{
 	font-size: 1.5rem;
-	margin-bottom: 3rem;
+
 }
 
 aside, main{
