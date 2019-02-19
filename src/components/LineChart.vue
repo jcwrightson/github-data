@@ -12,8 +12,8 @@
 
 			<defs>
 				<linearGradient id="Gradient1" x1="0" y1="0" x2="100%" y2="0">
-					<stop offset="0%" stop-color="rgb(0, 204, 41)" />
-					<stop offset="100%" stop-color="rgb(101, 103, 101)" />
+					<stop offset="0%" stop-color="rgb(184, 224, 224)" />
+					<stop offset="100%" stop-color="rgb(0, 0, 0)" />
 				</linearGradient>
 			</defs>
 
@@ -22,7 +22,7 @@
 			<template v-for="(point, index) in getPoints()">
 
 				<g :key="index" class="point">
-					<circle class="dot" :cx="point[0]" :cy="point[1]" r="4" stroke-width="6" :fill="getGradiatedColor(sortByLargestResult[index])" stroke="rgba(255,255,255,0)"></circle>
+					<circle class="dot" :cx="point[0]" :cy="point[1]" r="4" stroke-width="6" fill="black" stroke="rgba(255,255,255,0)"></circle>
 					<text class="label" :x="point[0] - 80" :y="point[1] + 35">{{sortByLargestResult[index].value}}</text>
 					<text class="label" :x="point[0] - 80" :y="point[1] + 20">{{sortByLargestResult[index].query}}</text>
 				</g>
@@ -69,14 +69,22 @@ export default {
 		},
 		getPoints(){
 			return[...this.sortByLargestResult.map((result, index) => {
-				return [this.getX(index), Math.abs(this.getHeight(result) - this.chart.height)]
+				if(index === 0){
+					return [this.getX(index), Math.abs(this.getHeight(result) - this.chart.height)]
+				}else{
+					return [(this.getX(index) + (this.getX(index) * 0.25)), Math.abs(this.getHeight(result) - this.chart.height)]
+				}
 			})]
 		},
 		getWidth(){
 			return (this.chart.width / this.results.length) - this.chart.padding
 		},
 		getHeight(result){
-			let largestResult = this.chart.height
+			if(this.results.length < 2){
+				return this.chart.height
+			}
+
+			let largestResult
 			
 			if(this.results.length > 1){
 				largestResult = this.sortByLargestResult[0].value
@@ -94,7 +102,9 @@ export default {
 		},
 		getGradiatedColor(result){
 			const proportion = this.chart.height / this.getHeight(result)
-			return `hsla(${132}, ${100 / proportion}%, 40%, 1)`
+			return `hsla(180, 40% ,${80 / proportion}%, 1)`
+
+			// return `hsla(${132}, ${100 / proportion}%, 40%, 1)`
 		},
 	}
 }

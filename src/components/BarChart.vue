@@ -76,7 +76,12 @@ export default {
 			return (this.chart.width / this.results.length) - this.chart.padding
 		},
 		getHeight(result){
-			let largestResult = this.chart.height
+
+			if(this.results.length < 2){
+				return this.chart.height
+			}
+
+			let largestResult
 			
 			if(this.results.length > 1){
 				largestResult = this.sortByLargestResult[0].value
@@ -84,7 +89,13 @@ export default {
 
 			const proportion = largestResult / result.value
 
-			return this.chart.height / proportion
+			const height = Math.floor(this.chart.height / proportion)
+
+			if (height > 0){
+				return height
+			}
+			
+			return 1
 		},
 		getX(index){
 			return (this.getWidth() + this.chart.padding) * index
@@ -94,7 +105,8 @@ export default {
 		},
 		getGradiatedColor(result){
 			const proportion = this.chart.height / this.getHeight(result)
-			return `hsla(${132}, ${100 / proportion}%, 40%, 1)`
+			return `hsla(180, 40% ,${80 / proportion}%, 1)`
+			// return `hsla(${132}, ${100 / proportion}%, 40%, 1)`
 		},
 	}
 }

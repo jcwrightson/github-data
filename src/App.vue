@@ -26,4 +26,17 @@
     padding: 0;
     font-family: monospace;
   }
+
+  .container {
+    width: 100%;
+    padding: 2rem;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  h1{
+    font-size: 1.5rem;
+  }
 </style>

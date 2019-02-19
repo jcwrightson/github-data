@@ -1,43 +1,64 @@
 <template>
 	<div class="home">
 		
-		<div class="container search">
+		<aside class="container">
 
-			<!-- Input -->
+			
+
+			<div class="block">
+
+			<h1 class="name">Github Data</h1>
+
 			<h1>Terms</h1>
-			<template v-for="(number, index) in comparisons">
-				<div :key="index">
-					<Search :searchType="searchType" :searchTerm="getSearchTerm(index)" v-on:result="handleResult" :index="index" />
-				</div>
-			</template>
-			<div class="buttons">
-				<button v-on:click="handleDecrement">-</button>
-				<button v-on:click="handleIncrement">+</button>
-			</div>
-		</div>
-		
-		<div class="container results">
 
-			<!-- Output -->
-			<template v-if="results.length">
-				<div class="row">
-					<h1>{{this.searchType}} Count</h1>
-					<select v-model="chart.type" v-on:change="handleChartType">
-						<option value="bar">Bar</option>
-						<option value="line">Line</option>	
-					</select>
+				<template v-for="(term, index) in queries[search.selectedQuery].terms">
+					<Search :key="index" :searchType="search.searchType" :searchTerm="term" v-on:result="handleResult" :index="index" />
+				</template>
+
+				<div class="buttons">
+					<button v-on:click="handleDecrement">-</button>
+					<button v-on:click="handleIncrement">+</button>
 				</div>
-			</template>
+
+			</div>
+
+			<div class="block">
+
+				<h1>Datasets</h1>
+
+				<select v-model="search.selectedQuery" v-on:change="handleSelectQuery">
+					<option :value="query.parent" v-for="(query, index) in queries" :key="index">{{query.label}}</option>
+				</select>
+
+			</div>
+		</aside>
 		
+		<main>
+
+		
+			<div class="top row">
+				<select v-model="search.searchType" v-on:change="handleSelectType">
+					<option  v-for="(type, index) in search.searchTypes" :value="type" :key="index">{{type}}</option>
+				</select>
+				<select v-model="chart.type" v-on:change="handleChartType">
+					<option value="bar">Bar</option>
+					<option value="line">Line</option>	
+				</select>
+			</div>
+
+	
+		
+			<div class="container">
 			<template v-if="chart.type === 'bar'">
-				<BarChart :chart="chart" :results="results"/>
+				<BarChart :chart="chart" :results="queries[search.selectedQuery].results"/>
 			</template>
 
 			<template v-if="chart.type === 'line'">
-				<LineChart :chart="chart" :results="results"/>
+				<LineChart :chart="chart" :results="queries[search.selectedQuery].results"/>
 			</template>
+			</div>
 	
-		</div>
+		</main>
 			
 			
 	</div>
@@ -58,14 +79,31 @@ export default {
 	},
 	data(){
 		return{
-			searchType: 'REPOSITORY',
-			initialTerms: [],
-			sampleQueries: {
-				frontend: ['react', 'vue', 'angular', 'backbone', 'ember', 'knockout'],
-				backend: ['node', 'php', 'python', '.net', 'ruby on rails', 'go']
+			search: {
+				searchTypes: ['REPOSITORY', 'USER', 'ISSUE'], 
+				searchType: 'REPOSITORY',
+				selectedQuery: 'custom'
 			},
-			results: [],
-			comparisons: 2,
+			queries:{
+				custom: {
+					parent: 'custom',
+					label: 'Custom',
+					terms: [''],
+					results: []
+				},
+				frontend: {
+					parent: 'frontend',
+					label: 'Frontend',
+					terms: ['react', 'vue', 'angular', 'jquery', 'backbone', 'ember', 'babel', 'webpack', 'jest', 'mocha', 'firebase', 'docker'],
+					results: []
+				},
+				backend: {
+					parent: 'backend',
+					label: 'Backend',
+					terms: ['java', 'node', 'express', 'spring', 'django', 'flask', 'php', 'laravel', 'python', 'c#', 'ruby', 'go'],
+					results: []
+				}
+			},
 			chart: {
 				type: 'bar',
 				height: 600,
@@ -77,10 +115,13 @@ export default {
 	methods:{
 		handleResult(result){
 
-			let exists = this.results.filter(item => item.index === result.index).length === 1
+			// Update Results
+			const selectedQuery = this.search.selectedQuery
+
+			let exists = this.queries[selectedQuery].results.filter(item => item.index === result.index).length === 1
 
 			if(exists){
-				this.results = [...this.results.map(item => {
+				this.queries[selectedQuery].results = [...this.queries[selectedQuery].results.map(item => {
 					if(item.index === result.index){
 						item = result
 					}
@@ -88,34 +129,41 @@ export default {
 				})]
 			}else{
 
-				this.results = [...this.results, result]
+				this.queries[selectedQuery].results = [...this.queries[selectedQuery].results, result]
+			}
+
+			// If custom query, remember terms
+
+			if(selectedQuery === 'custom'){
+				this.queries[selectedQuery].terms[result.index] = result.query
 			}
 
 		},
-		getSearchTerm(index){
-			return this.initialTerms[index] || null
-		},
 		handleIncrement(){
-			this.comparisons++
+			this.queries[this.search.selectedQuery].terms.push('')
 		},
 		handleDecrement(){
-			if(this.comparisons > 1){
-				this.comparisons--
-
-				if(this.results.length > this.comparisons){
-					this.results.pop()
+			if(this.queries[this.search.selectedQuery].terms.length > 1){
+				this.queries[this.search.selectedQuery].terms.pop()
+				
+				if(this.search.results.length > this.queries[this.search.selectedQuery].terms.length){
+					this.search.results.pop()
 				}
+				
 			}
 		},
 		handleChartType(e){
 			this.chart = {...this.chart, type: e.currentTarget.value}
+		},
+		handleSelectQuery(e){
+
+			this.search = {...this.search, selectedQuery: e.currentTarget.value}
+		},
+		handleSelectType(e){
+
+			this.search = {...this.search, searchType: e.currentTarget.value}
 		}
 
-	},
-	created(){
-		this.initialTerms = this.sampleQueries.frontend
-		this.comparisons = this.initialTerms.length
-		
 	}
 }
 
@@ -126,84 +174,89 @@ export default {
 .home{
 	min-height: 100vh;
 	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	width: 100vw;
 
 }
 
-select{
-	padding: .5rem 2rem;
+h1.name{
+	font-size: 1.5rem;
+	margin-bottom: 3rem;
 }
 
-.container{
+aside, main{
 	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
+	flex-direction: column;
+}
 
-	&.search {
-		flex-direction: column;
-		justify-content: flex-start;
-		padding: 3rem;
-		background-color: #2b2b2b;
-		min-height: 100vh;
-		flex-basis: 15%;
-		min-width: 300px;
+aside.container{
+	justify-content: space-between;
+	align-items: flex-start;
+}
 
-		h1{
-			color: white;
-		}
+aside{
+	flex-basis: 15%;
+	min-height: 100vh;
+	background-color: #4e4e4e;
+	color: white;
 
-		input{
-			width: 100%;
-			font-size: 16px;
-		}
-
-		input, button{
-			padding: .5rem 1rem;
-			
-		}
-
-		.buttons{
-			display: flex;
-			flex-direction: row;
-			width: 100%;
-
-			button{
-				flex-basis: 50%;
-			}
-		}
-	}
-
-	&.results{
-		flex-basis: 85%;
-		flex-direction: column;
-		min-height: 100vh;
-		justify-content: center;
-		align-items: center;
+	input, select{
+		width: 100%;
 		
-		.row{
-			width: 900px;
-		}
 
-		h1{
-			text-align: center;
+		option{
+			color: black;
 		}
-		
-		
-		.chart{
-			display: flex;
-			flex-direction: column;
-			background-color: #f2f2f2;
-			padding: 4rem 8rem;
-			margin: 2rem 0;
-		}
-
-		
 	}
 
 	
+
+	.block{
+		width: 100%;
+	}
+
+	.buttons{
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+
+		button{
+			flex-basis: 49%;
+		}
+	}
+}
+
+main{
+	.container{
+		width: auto;
+	}
+
+	background-color: #fafafa;
+	flex-basis: 85%;
+}
+
+input, select, button {
+	padding: .6rem 1rem;
+	background-color: transparent;
+	border: 1px solid white;
+	color: white;
+	border-radius: 3px;
+
+	option{
+		color: black;
+	} 
+}
+
+button{
+	background-color: white;
+	color: black;
+}
+
+
+
+.top {
+	margin: 0;
+	background-color: #000;
+	padding: 2rem;
+	color: white;
 }
 
 svg{

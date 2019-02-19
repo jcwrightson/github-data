@@ -2,7 +2,7 @@
 
 	<div class="search">
 
-		<input type="text" placeholder="term" v-model="search.searchTerm" v-on:keydown="handleKeyDown"/>
+		<input type="text" placeholder="term" v-model="search.term" v-on:keydown="handleKeyDown" :class="loading ? 'loading' : ''"/>
 
 	</div>
 
@@ -37,11 +37,12 @@ export default {
 	data(){
 		return{
 			search: {
-				searchTerm: null,
+				term: null,
 				skipQuery: true,
 				results: null
 			},
-			debounce: null
+			debounce: null,
+			loading: false
 		}
 	},
 	apollo: {
@@ -49,12 +50,12 @@ export default {
 		// The 'variables' method is watched by vue
 		Search:{
 			query: function(){
-				return  this.$props.searchType === 'REPOSITORY' ? repoCountQuery : userCountQuery
+				return  this.searchType === 'REPOSITORY' ? repoCountQuery : userCountQuery
 			},
 			variables(){
 				return {
-					searchTerm: this.search.searchTerm,
-					searchType: this.$props.searchType,
+					searchTerm: this.search.term,
+					searchType: this.searchType,
 				}
 			},
 			deep: false,
@@ -66,12 +67,14 @@ export default {
 					
 				this.search.results = data.search.repositoryCount || data.search.userCount || data.search.issueCount
 
+				this.loading = loading
+
 				//Pass to parent
 				this.$emit('result', {
-					query: this.search.searchTerm,
-					type: this.$props.searchType,
+					query: this.search.term,
+					type: this.searchType,
 					value: this.search.results,
-					index: this.$props.index
+					index: this.index
 				})
 			},
 			error (error) {
@@ -89,6 +92,8 @@ export default {
 			this.triggerQuery()
 		},
 		triggerQuery(){
+
+			this.loading = true
 
 			//Enable fetching
 			this.$apollo.queries.Search.skip = false
@@ -112,9 +117,14 @@ export default {
 			}
 		}
 	},
-	mounted(){
-		if(this.$props.searchTerm){
-			this.search = {...this.search, searchTerm: this.$props.searchTerm}
+	watch: { 
+		searchTerm: function(updated, prev){
+          		this.search = {...this.search, term: updated }
+        }
+    },
+	created(){
+		if(this.searchTerm){
+			this.search = {...this.search, term: this.searchTerm}
 			this.handleSearch()
 		}
 	}
@@ -126,6 +136,13 @@ export default {
 	display: flex;
 	flex-direction: row;
 	margin-bottom: 1rem;
+	width: 100%;
+
+
+	input.loading{
+		background-color:white;
+		color: black
+	}
 }
 </style>
 
