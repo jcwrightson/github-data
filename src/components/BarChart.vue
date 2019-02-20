@@ -9,6 +9,7 @@
 			xmlns:ev="http://www.w3.org/2001/xml-events"
 			:width="`${chart.width}px`" :height="`${chart.height}px`">
 
+
 			<template v-for="(result, index) in sortByLargestResult">
 				<g :key="index" requiredFeatures="http://www.w3.org/Graphics/SVG/feature/1.2/#TextFlow">
 
@@ -50,7 +51,7 @@ const TweenMax = TweenLite
 
 export default {
 	name: 'BarChart',
-	props: ['results', 'chart'],
+	props: ['results', 'chart', 'loading'],
 	computed: {
 		
 		sortByLargestResult: function(){
@@ -65,7 +66,13 @@ export default {
 	},
 	methods:{
 		getWidth(){
-			return (this.chart.width / this.results.length) - this.chart.padding
+			const result = (this.chart.width / this.results.length) - this.chart.padding
+
+			if(result < 0){
+				return 1
+			}
+
+			return result
 		},
 		getHeight(result){
 

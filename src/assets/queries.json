@@ -8,7 +8,7 @@
 	},
 	"europe": {
 		"parent": "europe",
-		"label": "location:Europe",
+		"label": "location: Europe",
 		"scope": "location",
 		"terms": [
 				"Austria",
@@ -20,6 +20,8 @@
 				"Denmark",
 				"Estonia",
 				"Finland",
+				"Norway",
+				"Iceland",
 				"France",
 				"Germany",
 				"Greece",
@@ -38,13 +40,36 @@
 				"Slovenia",
 				"Spain",
 				"Sweden",
-				"United Kingdom"
+				"United Kingdom",
+				"Ukraine"
+			],
+		"results": []
+	},
+	"row": {
+		"parent": "row",
+		"label": "location: RO Developed World",
+		"scope": "location",
+		"terms": [
+				"Australia",
+				"USA",
+				"UAE",
+				"New Zealand",
+				"South Africa",
+				"India",
+				"China",
+				"South Korea",
+				"Japan",
+				"Singapore",
+				"Argentina",
+				"Mexico",
+				"Canada",
+				"Russia"
 			],
 		"results": []
 	},
 	"languages": {
 		"parent": "languages",
-		"label": "language:Popular",
+		"label": "language: Popular",
 		"scope": "language",
 		"terms": [
 			"actionscript",
@@ -75,7 +100,7 @@
 	},
 	"database": {
 		"parent": "database",
-		"label": "language:Database",
+		"label": "language: Database",
 		"scope": "language",
 		"terms": [
 			"microsoft sql server", 

@@ -65,7 +65,7 @@ export default {
 			},
 			variables(){
 				return {
-					searchTerm: this.scope !== 'none' ? `${this.scope}:${this.search.term}` : this.search.term,
+					searchTerm: this.scope !== 'none' ? `${this.scope}:"${this.search.term}"` : `"${this.search.term}"`,
 					searchType: this.searchType,
 				}
 			},
@@ -85,7 +85,8 @@ export default {
 					query: this.search.term,
 					type: this.searchType,
 					value: this.search.results,
-					index: this.index
+					index: this.index,
+					loading: loading
 				})
 			},
 			error (error) {
@@ -105,6 +106,7 @@ export default {
 		triggerQuery(){
 
 			this.loading = true
+			this.$emit('loading', {})
 
 			//Enable fetching
 			this.$apollo.queries.Search.skip = false

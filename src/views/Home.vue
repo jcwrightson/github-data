@@ -7,17 +7,15 @@
 
 				<h1>Scope</h1>
 				<select v-model="queries[search.selectedQuery].scope">
-						<option v-for="(scope, index) in search.scopeTypes" :key="index" :value="scope">{{scope}}</option>
-					</select>
+					<option v-for="(scope, index) in search.scopeTypes" :key="index" :value="scope">{{scope}}</option>
+				</select>
 
 				<h1>Terms</h1>
 
 				<div class="terms">
 
-					
-
 				<template v-for="(term, index) in queries[search.selectedQuery].terms">
-					<Search :key="index" :searchType="search.searchType" :searchTerm="term" :scope="queries[search.selectedQuery].scope" v-on:result="handleResult" :index="index" />
+					<Search v-on:loading="handleLoading" :key="index" :searchType="search.searchType" :searchTerm="term" :scope="queries[search.selectedQuery].scope" v-on:result="handleResult" :index="index" />
 				</template>
 				</div>
 				<div class="buttons">
@@ -32,7 +30,7 @@
 
 				<h1>Datasets</h1>
 
-				<select v-model="search.selectedQuery" v-on:change="handleSelectQuery">
+				<select v-model="search.selectedQuery">
 					<option :value="query.parent" v-for="(query, index) in queries" :key="index">{{query.label}}</option>
 				</select>
 
@@ -42,18 +40,27 @@
 		<main>
 
 			<div class="top row">
-				<select v-model="search.searchType" v-on:change="handleSelectType">
-					<option  v-for="(type, index) in search.searchTypes" :value="type" :key="index">{{type}}</option>
-				</select>
+				<div style="display:flex; flex-direction:row; align-items:center;">
+					
+					<svg v-on:click="toggleSideBar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 12">
+						<path id="ic_menu_24px" d="M3,18H21V16H3Zm0-5H21V11H3ZM3,6V8H21V6Z" transform="translate(-3 -6)"/>
+					</svg>
+					
+					<select v-model="search.searchType">
+						<option  v-for="(type, index) in search.searchTypes" :value="type" :key="index">{{type}}</option>
+					</select>
+				</div>
+
 				<h1 class="name">Github Search</h1>
-				<select v-model="chart.type" v-on:change="handleChartType">
+
+				<select v-model="chart.type">
 					<option value="bar">Bar</option>
 					<option value="line">Line</option>	
 				</select>
 			</div>
 		
 			<template v-if="chart.type === 'bar'">
-				<BarChart :chart="chart" :results="queries[search.selectedQuery].results"/>
+				<BarChart :chart="chart" :loading="loading" :results="queries[search.selectedQuery].results"/>
 			</template>
 
 			<template v-if="chart.type === 'line'">
@@ -93,8 +100,9 @@ export default {
 				type: 'bar',
 				height: 600,
 				width: 900,
-				padding: 10
-			}
+				padding: 5
+			},
+			loading: false
 		}
 	},
 	methods:{
@@ -123,6 +131,11 @@ export default {
 				this.queries[selectedQuery].terms[result.index] = result.query
 			}
 
+			this.loading = result.loading
+
+		},
+		handleLoading(){
+			this.loading = true
 		},
 		handleIncrement(){
 			this.queries[this.search.selectedQuery].terms.push('')
@@ -137,14 +150,9 @@ export default {
 				
 			}
 		},
-		handleChartType(e){
-			this.chart = {...this.chart, type: e.currentTarget.value}
-		},
-		handleSelectQuery(e){
-			// this.search = {...this.search, selectedQuery: e.currentTarget.value}
-		},
-		handleSelectType(e){
-			// this.search = {...this.search, searchType: e.currentTarget.value}
+		toggleSideBar(){
+			document.querySelector('aside').classList.toggle('js-active')
+			document.querySelector('main').classList.toggle('js-active')
 		}
 	},
 	mounted(){
@@ -154,6 +162,12 @@ export default {
 
 		window.addEventListener('resize', ()=>{
 			this.chart = {...this.chart, width: chart.clientWidth - 300}
+		})
+
+		document.querySelector('.chart').addEventListener("click", ()=>{
+			if(document.querySelector('aside').classList.contains('js-active')){
+				this.toggleSideBar()
+			}
 		})
 	}
 }
@@ -165,7 +179,6 @@ export default {
 .home{
 	min-height: 100vh;
 	display: flex;
-
 }
 
 h1.name{
@@ -176,18 +189,27 @@ h1.name{
 aside, main{
 	display: flex;
 	flex-direction: column;
+
+	transition: left 200ms ease-in-out;
 }
 
 aside.container{
 	justify-content: space-between;
 	align-items: flex-start;
+	width: 300px;
 }
 
 aside{
-	flex-basis: 15%;
+	
+	position: fixed;
 	min-height: 100vh;
-	background-color: #4e4e4e;
+	background-color: #838383;
 	color: white;
+	left: -300px;
+
+	&.js-active{
+		left:0;
+	}
 
 	input, select{
 		width: 100%;
@@ -223,8 +245,17 @@ main{
 		width: auto;
 	}
 
-	background-color: #fafafa;
-	flex-basis: 85%;
+	&.js-active{
+		left: 300px;
+	}
+
+	position: absolute;
+	left:0;
+	width: 100%;
+	height: 100%;
+
+	
+	flex-basis: 100%;
 }
 
 .chart{
@@ -234,6 +265,7 @@ main{
 	align-items: center;
 	justify-content: center;
 	height: 100%;
+	background-color: #f2f2f2;
 }
 
 input, select, button {
@@ -257,9 +289,16 @@ button{
 
 .top {
 	margin: 0;
-	background-color: #000;
-	padding: 2rem;
+	background-color: #398585;
+	padding: 1rem 2rem;
 	color: white;
+	svg{
+		width: 24px;
+		height: 24px;
+		fill: currentColor;
+		margin-right: 2rem;
+		cursor: pointer;
+	}
 }
 
 svg{

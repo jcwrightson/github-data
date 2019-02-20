@@ -26,6 +26,7 @@
     margin: 0;
     padding: 0;
     font-family: monospace;
+    overflow-x: hidden;
   }
 
   .container {
