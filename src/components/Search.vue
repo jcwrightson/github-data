@@ -65,7 +65,7 @@ export default {
 			result ({ data, loading, networkStatus }) {
 
 					
-				this.search.results = data.search.repositoryCount || data.search.userCount || data.search.issueCount
+				this.search.results = data.search.repositoryCount || data.search.userCount || data.search.issueCount || 0
 
 				this.loading = loading
 

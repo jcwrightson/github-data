@@ -10,35 +10,28 @@
 			:width="`${chart.width}px`" :height="`${chart.height}px`">
 
 			<template v-for="(result, index) in sortByLargestResult">
-				<g :key="index">
+				<g :key="index" requiredFeatures="http://www.w3.org/Graphics/SVG/feature/1.2/#TextFlow">
 
 					<rect class="rect" :width="`${getWidth()}px`" :fill="getGradiatedColor(result)"></rect>
+
 					<text class="label value"
-			
+						height="20px"
 						:width="`${getWidth()}px`" 
-						:height="`${getHeight(result)}px`" 
-						fill="black" 
 						:x="`${getX(index)}px`"
 						:y="`${getY(index, result) - 5}px`">
 
 						{{result.value}}
-						<!-- {{result.value}} -->
+
 					</text>
 
-					<text class="label title"
-						:key="index"
-						:width="`${getWidth()}px`" 
-						:height="`${getHeight(result)}px`" 
-						fill="black"
-						:y="chart.height + 20" 
-						:x="`${getX(index)}px`">
-			
-						{{result.query}}
-					</text>
+					<foreignObject  class="label title" :x="`${getX(index)}px`" :y="chart.height + 10" :width="`${getWidth()}px`" height="130px" 
+						requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+						<p xmlns="http://www.w3.org/1999/xhtml">{{result.query}}</p>
+					</foreignObject>
+				
 				</g>
 				
 			</template>
-
 		</svg>
 			
 	</template>
@@ -141,6 +134,11 @@ svg{
 		text-transform: uppercase;
 		font-family: monospace;
 		opacity: 0;
+	}
+
+	p{
+		margin: 0;
+		font-size: .9rem;
 	}
 
 }
