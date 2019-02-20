@@ -99,6 +99,12 @@ export default {
 					label: 'Backend',
 					terms: ['java', 'node', 'express', 'spring', 'django', 'flask', 'php', 'laravel', 'python', 'c#', 'ruby', 'go'],
 					results: []
+				},
+				database: {
+					parent: 'database',
+					label: 'Database',
+					terms: ['microsoft sql server', 'mysql', 'mongodb', 'oracle', 'ibm db2', 'postgresql', 'mariadb', 'sap sybase ase', 'teradata', 'informix', 'ingres', 'amazon simple db'],
+					results: []
 				}
 			},
 			chart: {
