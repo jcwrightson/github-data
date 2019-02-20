@@ -20,8 +20,9 @@
 						fill="black" 
 						:x="`${getX(index)}px`"
 						:y="`${getY(index, result) - 5}px`">
-			
+
 						{{result.value}}
+						<!-- {{result.value}} -->
 					</text>
 
 					<text class="label title"
@@ -51,12 +52,14 @@
 </template>
 
 <script>
-import { TweenMax } from "gsap";
+import { TweenLite } from "gsap";
+const TweenMax = TweenLite
 
 export default {
 	name: 'BarChart',
 	props: ['results', 'chart'],
 	computed: {
+		
 		sortByLargestResult: function(){
 			if(this.results.length){
 				
@@ -117,7 +120,10 @@ export default {
 				TweenMax.to(title[index], 2, {opacity: 1}).delay(1)
 				TweenMax.to(value[index], 2, {opacity: 1}).delay(2)
 			})
-		}
+		},
+		tweenedResult: (x)=>{
+			// return Tween(0, x, 2)
+		},
 	},
 	mounted(){
 		this.animate()

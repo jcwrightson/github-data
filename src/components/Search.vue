@@ -119,7 +119,8 @@ export default {
 	},
 	watch: { 
 		searchTerm: function(updated, prev){
-          		this.search = {...this.search, term: updated }
+				  this.search = {...this.search, term: updated }
+				  this.handleSearch()
         }
     },
 	created(){

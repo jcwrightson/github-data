@@ -3,11 +3,9 @@
 		
 		<aside class="container">
 
-			
-
 			<div class="block">
 
-			<h1>Terms</h1>
+				<h1>Terms</h1>
 
 				<template v-for="(term, index) in queries[search.selectedQuery].terms">
 					<Search :key="index" :searchType="search.searchType" :searchTerm="term" v-on:result="handleResult" :index="index" />
@@ -38,7 +36,7 @@
 				<select v-model="search.searchType" v-on:change="handleSelectType">
 					<option  v-for="(type, index) in search.searchTypes" :value="type" :key="index">{{type}}</option>
 				</select>
-				<h1 class="name">Github Data</h1>
+				<h1 class="name">Github Search</h1>
 				<select v-model="chart.type" v-on:change="handleChartType">
 					<option value="bar">Bar</option>
 					<option value="line">Line</option>	
@@ -155,15 +153,11 @@ export default {
 			this.chart = {...this.chart, type: e.currentTarget.value}
 		},
 		handleSelectQuery(e){
-
 			this.search = {...this.search, selectedQuery: e.currentTarget.value}
-			this.queries[e.currentTarget.value].results = []
 		},
 		handleSelectType(e){
-
 			this.search = {...this.search, searchType: e.currentTarget.value}
 		}
-
 	}
 }
 
