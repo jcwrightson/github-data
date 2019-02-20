@@ -5,16 +5,26 @@
 
 			<div class="block">
 
+				<h1>Scope</h1>
+				<select v-model="queries[search.selectedQuery].scope">
+						<option v-for="(scope, index) in search.scopeTypes" :key="index" :value="scope">{{scope}}</option>
+					</select>
+
 				<h1>Terms</h1>
 
-				<template v-for="(term, index) in queries[search.selectedQuery].terms">
-					<Search :key="index" :searchType="search.searchType" :searchTerm="term" v-on:result="handleResult" :index="index" />
-				</template>
+				<div class="terms">
 
+					
+
+				<template v-for="(term, index) in queries[search.selectedQuery].terms">
+					<Search :key="index" :searchType="search.searchType" :searchTerm="term" :scope="queries[search.selectedQuery].scope" v-on:result="handleResult" :index="index" />
+				</template>
+				</div>
 				<div class="buttons">
 					<button v-on:click="handleDecrement">-</button>
 					<button v-on:click="handleIncrement">+</button>
 				</div>
+				
 
 			</div>
 
@@ -42,22 +52,16 @@
 				</select>
 			</div>
 		
-				
-			
-				<template v-if="chart.type === 'bar'">
-					<BarChart :chart="chart" :results="queries[search.selectedQuery].results"/>
-				</template>
+			<template v-if="chart.type === 'bar'">
+				<BarChart :chart="chart" :results="queries[search.selectedQuery].results"/>
+			</template>
 
-				<template v-if="chart.type === 'line'">
-					<LineChart :chart="chart" :results="queries[search.selectedQuery].results"/>
-				</template>
+			<template v-if="chart.type === 'line'">
+				<LineChart :chart="chart" :results="queries[search.selectedQuery].results"/>
+			</template>
 
-				
-			
-	
 		</main>
-			
-			
+
 	</div>
 </template>
 
@@ -66,6 +70,8 @@
 import Search from '@/components/Search'
 import BarChart from '@/components/BarChart'
 import LineChart from '@/components/LineChart'
+
+const starterQueries = require('@/assets/queries.json')
 
 export default {
 	name: 'home',
@@ -78,35 +84,11 @@ export default {
 		return{
 			search: {
 				searchTypes: ['REPOSITORY', 'USER', 'ISSUE'], 
+				scopeTypes: ['none', 'location', 'language', 'license'],
 				searchType: 'REPOSITORY',
 				selectedQuery: 'custom'
 			},
-			queries:{
-				custom: {
-					parent: 'custom',
-					label: 'Custom',
-					terms: [''],
-					results: []
-				},
-				frontend: {
-					parent: 'frontend',
-					label: 'Frontend',
-					terms: ['react', 'vue', 'angular', 'jquery', 'backbone', 'ember', 'babel', 'webpack', 'jest', 'mocha', 'firebase', 'docker'],
-					results: []
-				},
-				backend: {
-					parent: 'backend',
-					label: 'Backend',
-					terms: ['java', 'node', 'express', 'spring', 'django', 'flask', 'php', 'laravel', 'python', 'c#', 'ruby', 'go'],
-					results: []
-				},
-				database: {
-					parent: 'database',
-					label: 'Database',
-					terms: ['microsoft sql server', 'mysql', 'mongodb', 'oracle', 'ibm db2', 'postgresql', 'mariadb', 'sap sybase ase', 'teradata', 'informix', 'ingres', 'amazon simple db'],
-					results: []
-				}
-			},
+			queries:{...starterQueries},
 			chart: {
 				type: 'bar',
 				height: 600,
@@ -159,10 +141,10 @@ export default {
 			this.chart = {...this.chart, type: e.currentTarget.value}
 		},
 		handleSelectQuery(e){
-			this.search = {...this.search, selectedQuery: e.currentTarget.value}
+			// this.search = {...this.search, selectedQuery: e.currentTarget.value}
 		},
 		handleSelectType(e){
-			this.search = {...this.search, searchType: e.currentTarget.value}
+			// this.search = {...this.search, searchType: e.currentTarget.value}
 		}
 	},
 	mounted(){
@@ -209,17 +191,20 @@ aside{
 
 	input, select{
 		width: 100%;
-		
+		margin-bottom: .5rem;
 
 		option{
 			color: black;
 		}
 	}
 
-	
-
 	.block{
 		width: 100%;
+
+		.terms{
+			overflow-y: auto;
+			max-height: 600px;
+		}
 	}
 
 	.buttons{

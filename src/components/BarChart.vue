@@ -133,8 +133,6 @@ export default {
 
 <style lang="scss">
 
-
-
 svg{
 	.label{
 		text-transform: uppercase;

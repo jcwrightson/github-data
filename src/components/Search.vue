@@ -27,12 +27,22 @@ const repoCountQuery = gql`query
 	}
 }`
 
+const Query = gql`query 
+	Search($searchTerm: String!, $searchType: SearchType!){
+		search(type: $searchType, query: $searchTerm){
+			repositoryCount,
+			userCount,
+			issueCount
+	}
+}`
+
 export default {
 	name: 'Search',
 	props:[
 		'searchType',
 		'index',
-		'searchTerm'
+		'searchTerm',
+		'scope'
 	],
 	data(){
 		return{
@@ -50,11 +60,12 @@ export default {
 		// The 'variables' method is watched by vue
 		Search:{
 			query: function(){
-				return  this.searchType === 'REPOSITORY' ? repoCountQuery : userCountQuery
+				return Query
+				// return  this.searchType === 'REPOSITORY' ? repoCountQuery : userCountQuery
 			},
 			variables(){
 				return {
-					searchTerm: this.search.term,
+					searchTerm: this.scope !== 'none' ? `${this.scope}:${this.search.term}` : this.search.term,
 					searchType: this.searchType,
 				}
 			},
@@ -136,7 +147,6 @@ export default {
 .search{
 	display: flex;
 	flex-direction: row;
-	margin-bottom: 1rem;
 	width: 100%;
 
 
