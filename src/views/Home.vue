@@ -31,7 +31,6 @@
 		
 		<main>
 
-		
 			<div class="top row">
 				<select v-model="search.searchType" v-on:change="handleSelectType">
 					<option  v-for="(type, index) in search.searchTypes" :value="type" :key="index">{{type}}</option>
@@ -42,17 +41,15 @@
 					<option value="line">Line</option>	
 				</select>
 			</div>
-
-	
 		
 			<div class="container">
-			<template v-if="chart.type === 'bar'">
-				<BarChart :chart="chart" :results="queries[search.selectedQuery].results"/>
-			</template>
+				<template v-if="chart.type === 'bar'">
+					<BarChart :chart="chart" :results="queries[search.selectedQuery].results"/>
+				</template>
 
-			<template v-if="chart.type === 'line'">
-				<LineChart :chart="chart" :results="queries[search.selectedQuery].results"/>
-			</template>
+				<template v-if="chart.type === 'line'">
+					<LineChart :chart="chart" :results="queries[search.selectedQuery].results"/>
+				</template>
 			</div>
 	
 		</main>

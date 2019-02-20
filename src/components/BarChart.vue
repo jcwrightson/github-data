@@ -18,7 +18,7 @@
 						height="20px"
 						:width="`${getWidth()}px`" 
 						:x="`${getX(index)}px`"
-						:y="`${getY(index, result) - 5}px`">
+						>
 
 						{{result.value}}
 
@@ -110,6 +110,7 @@ export default {
 				TweenMax.to(bar[index], 1, {y: `${this.getY(index, result)}px`}).delay(.5)
 				TweenMax.to(bar[index], 1, {x: `${this.getX(index)}px`}).delay(.5)
 
+				TweenMax.to(value[index], 1, {y: `${this.getY(index, result) - 10}px`}).delay(.5)
 				TweenMax.to(title[index], 2, {opacity: 1}).delay(1)
 				TweenMax.to(value[index], 2, {opacity: 1}).delay(2)
 			})
