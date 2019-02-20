@@ -124,11 +124,16 @@ export default {
 	},
 	updated(){
 		this.animate()
+	},
+	created(){
+		
 	}
 }
 </script>
 
 <style lang="scss">
+
+
 
 svg{
 	.label{

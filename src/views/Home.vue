@@ -42,7 +42,8 @@
 				</select>
 			</div>
 		
-			<div class="container">
+				
+			
 				<template v-if="chart.type === 'bar'">
 					<BarChart :chart="chart" :results="queries[search.selectedQuery].results"/>
 				</template>
@@ -50,7 +51,9 @@
 				<template v-if="chart.type === 'line'">
 					<LineChart :chart="chart" :results="queries[search.selectedQuery].results"/>
 				</template>
-			</div>
+
+				
+			
 	
 		</main>
 			
@@ -161,6 +164,15 @@ export default {
 		handleSelectType(e){
 			this.search = {...this.search, searchType: e.currentTarget.value}
 		}
+	},
+	mounted(){
+		const chart = document.querySelector('.chart')
+
+		this.chart = {...this.chart, width: chart.clientWidth - 300}
+
+		window.addEventListener('resize', ()=>{
+			this.chart = {...this.chart, width: chart.clientWidth - 300}
+		})
 	}
 }
 
@@ -228,6 +240,15 @@ main{
 
 	background-color: #fafafa;
 	flex-basis: 85%;
+}
+
+.chart{
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
 }
 
 input, select, button {
