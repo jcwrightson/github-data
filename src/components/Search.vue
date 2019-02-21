@@ -65,7 +65,7 @@ export default {
 			},
 			variables(){
 				return {
-					searchTerm: this.scope !== 'none' ? `${this.scope}:"${this.search.term}"` : `"${this.search.term}"`,
+					searchTerm: this.scope !== 'literal' ? `${this.scope}:"${this.search.term}"` : `"${this.search.term}"`,
 					searchType: this.searchType,
 				}
 			},

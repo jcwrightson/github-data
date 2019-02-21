@@ -91,7 +91,7 @@ export default {
 		return{
 			search: {
 				searchTypes: ['REPOSITORY', 'USER', 'ISSUE'], 
-				scopeTypes: ['none', 'location', 'language', 'license'],
+				scopeTypes: ['literal', 'location', 'language', 'license'],
 				searchType: 'REPOSITORY',
 				selectedQuery: 'custom'
 			},
@@ -111,7 +111,7 @@ export default {
 			// Update Results
 			const selectedQuery = this.search.selectedQuery
 
-			let exists = this.queries[selectedQuery].results.filter(item => item.index === result.index).length === 1
+			const exists = this.queries[selectedQuery].results.filter(item => item.index === result.index).length === 1
 
 			if(exists){
 				this.queries[selectedQuery].results = [...this.queries[selectedQuery].results.map(item => {

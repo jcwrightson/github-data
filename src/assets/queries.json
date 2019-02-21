@@ -3,7 +3,7 @@
 		"parent": "custom",
 		"label": "Custom",
 		"terms": [""],
-		"scope": "none",
+		"scope": "literal",
 		"results": []
 	},
 	"europe": {
