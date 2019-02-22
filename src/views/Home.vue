@@ -13,10 +13,19 @@
 				<h1>Terms</h1>
 
 				<div class="terms">
+					
+					<Search v-for="(term, index) in queries[search.selectedQuery].terms"
+						v-on:delete="handleDelete" 
+						v-on:loading="handleLoading"
+						v-on:result="handleResult" 
 
-				<template v-for="(term, index) in queries[search.selectedQuery].terms">
-					<Search v-on:loading="handleLoading" :key="index" :searchType="search.searchType" :searchTerm="term" :scope="queries[search.selectedQuery].scope" v-on:result="handleResult" :index="index" />
-				</template>
+						:key="index"
+						:id="index" 
+						:searchType="search.searchType" 
+						:searchTerm="term" 
+						:scope="queries[search.selectedQuery].scope" 
+					/>
+
 				</div>
 				<div class="buttons">
 					<button v-on:click="handleDecrement">-</button>
@@ -107,31 +116,32 @@ export default {
 	},
 	methods:{
 		handleResult(result){
-
-			// Update Results
+		
 			const selectedQuery = this.search.selectedQuery
 
-			const exists = this.queries[selectedQuery].results.filter(item => item.index === result.index).length === 1
+			let results = this.queries[selectedQuery].results
+			results[result.id] = {...result}
 
-			if(exists){
-				this.queries[selectedQuery].results = [...this.queries[selectedQuery].results.map(item => {
-					if(item.index === result.index){
-						item = result
-					}
-					return item
-				})]
-			}else{
+			this.queries[selectedQuery].results = [...results]
 
-				this.queries[selectedQuery].results = [...this.queries[selectedQuery].results, result]
-			}
-
-			// If custom query, remember terms
-
+			// If custom query, remember term
 			if(selectedQuery === 'custom'){
-				this.queries[selectedQuery].terms[result.index] = result.query
+				this.queries[selectedQuery].terms[result.id] = result.query
 			}
 
 			this.loading = result.loading
+
+		},
+		handleDelete(payload){
+
+			if(this.queries[this.search.selectedQuery].terms.length > 1){
+				this.queries[this.search.selectedQuery].terms.splice(payload.id, 1)
+				
+				if(this.queries[this.search.selectedQuery].results.length > this.queries[this.search.selectedQuery].terms.length){
+					this.queries[this.search.selectedQuery].results.splice(payload.id, 1)
+				}
+				
+			}
 
 		},
 		handleLoading(){
@@ -158,10 +168,12 @@ export default {
 	mounted(){
 		const chart = document.querySelector('.chart')
 
-		this.chart = {...this.chart, width: chart.clientWidth - 300}
+		const chartWidth = chart.clientWidth || chart.innerWidth
+
+		this.chart = {...this.chart, width: chartWidth - 300}
 
 		window.addEventListener('resize', ()=>{
-			this.chart = {...this.chart, width: chart.clientWidth - 300}
+			this.chart = {...this.chart, width: chartWidth - 300}
 		})
 
 		document.querySelector('.chart').addEventListener("click", ()=>{
