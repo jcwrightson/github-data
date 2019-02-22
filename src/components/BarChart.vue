@@ -11,7 +11,7 @@
 
 
 			<template v-for="(result, index) in sortByLargestResult">
-				<g :key="result.id" requiredFeatures="http://www.w3.org/Graphics/SVG/feature/1.2/#TextFlow">
+				<g :key="index" requiredFeatures="http://www.w3.org/Graphics/SVG/feature/1.2/#TextFlow">
 
 					<rect class="rect" :width="`${getWidth()}px`" :fill="getGradiatedColor(result)"></rect>
 
