@@ -1,35 +1,45 @@
 {
-  "name": "github-data-visualisation",
-  "version": "0.1.0",
-  "private": false,
-  "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
-  },
-  "dependencies": {
-    "apollo-cache-inmemory": "^1.4.2",
-    "apollo-client": "^2.4.12",
-    "apollo-link": "^1.2.8",
-    "apollo-link-http": "^1.5.11",
-    "graphql": "^14.1.1",
-    "graphql-tag": "^2.10.1",
-    "gsap": "^2.1.0",
-    "vue": "^2.5.22",
-    "vue-apollo": "^3.0.0-beta.28",
-    "vue-cli-plugin-apollo": "^0.19.1",
-    "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.4.0",
-    "@vue/cli-plugin-eslint": "^3.4.0",
-    "@vue/cli-service": "^3.4.0",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^5.8.0",
-    "eslint-plugin-vue": "^5.0.0",
-    "node-sass": "^4.9.0",
-    "sass-loader": "^7.1.0",
-    "vue-template-compiler": "^2.5.21"
-  }
+	"name": "github-data-visualisation",
+	"version": "0.1.0",
+	"private": false,
+	"scripts": {
+		"serve": "vue-cli-service serve",
+		"build": "vue-cli-service build",
+		"lint": "vue-cli-service lint"
+	},
+	"dependencies": {
+		"apollo-cache-inmemory": "^1.4.2",
+		"apollo-client": "^2.4.12",
+		"apollo-link": "^1.2.8",
+		"apollo-link-http": "^1.5.11",
+		"graphql": "^14.1.1",
+		"graphql-tag": "^2.10.1",
+		"gsap": "^2.1.0",
+		"vue": "^2.5.22",
+		"vue-apollo": "^3.0.0-beta.28",
+		"vue-cli-plugin-apollo": "^0.19.1",
+		"vue-router": "^3.0.1",
+		"vuex": "^3.0.1"
+	},
+	"devDependencies": {
+		"@vue/cli-plugin-babel": "^3.4.0",
+		"@vue/cli-plugin-eslint": "^3.4.0",
+		"@vue/cli-service": "^3.4.0",
+		"babel-eslint": "^10.0.1",
+		"eslint": "^5.8.0",
+		"eslint-plugin-vue": "^5.0.0",
+		"node-sass": "^4.9.0",
+		"sass-loader": "^7.1.0",
+		"vue-template-compiler": "^2.5.21"
+	},
+	"prettier": {
+		"trailingComma": "none",
+		"tabWidth": 4,
+		"useTabs": true,
+		"semi": false,
+		"singleQuote": true,
+		"bracketSpacing": true,
+		"arrowParens": "avoid",
+		"proseWrap": "preserve"
+	}
 }

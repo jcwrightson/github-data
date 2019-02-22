@@ -47,7 +47,7 @@
 	},
 	"row": {
 		"parent": "row",
-		"label": "location: RO Developed World",
+		"label": "location: ROW",
 		"scope": "location",
 		"terms": [
 				"Australia",
