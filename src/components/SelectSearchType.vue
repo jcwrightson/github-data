@@ -1,21 +1,22 @@
 <template>
-  <select @change="changeSearchType">
-    <option v-for="(type, index) in searchTypes" :value="type" :key="index">{{type}}</option>
+  <select v-model="selectedType">
+    <option v-for="(type, index) in search.searchTypes" :value="type" :key="index">{{type}}</option>
   </select>
 </template>
 
 <script>
 import store from '@/store'
+import { mapState } from 'vuex'
 export default {
 	name: 'SelectSearchType',
-	computed: {
-		searchTypes() {
-			return store.state.search.searchTypes
-		}
-	},
-	methods: {
-		changeSearchType(e) {
-			this.$store.commit('changeSearchType', e.target.value)
+	computed: {...mapState(['search']),
+		selectedType: {
+			set(value){
+				this.$store.commit('changeSearchType', value)
+			},
+			get(){
+				return this.search.selectedType
+			}
 		}
 	}
 }

@@ -9,7 +9,7 @@
         :height="`${chart.height}px`"
       >
         <template v-for="(result, index) in sortByLargestResult">
-          <g :key="index" requiredFeatures="http://www.w3.org/Graphics/SVG/feature/1.2/#TextFlow">
+          <g :key="result.id" requiredFeatures="http://www.w3.org/Graphics/SVG/feature/1.2/#TextFlow">
             <rect class="rect" :width="`${getWidth()}px`" :fill="getGradiatedColor(result)"></rect>
 
             <text
@@ -17,7 +17,7 @@
               height="20px"
               :width="`${getWidth()}px`"
               :x="`${getX(index)}px`"
-            >{{result.value}}</text>
+            >{{prettyValue(result.value)}}</text>
 
             <foreignObject
               class="label title"
@@ -54,6 +54,20 @@ export default {
 		}
 	},
 	methods: {
+		roundToTwo(num) {
+			return +(Math.round(num + 'e+2') + 'e-2')
+		},
+		prettyValue(value) {
+			if (value > 1000000) {
+				return `${this.roundToTwo(value / 1000000)}m`
+			}
+
+			if (value > 1000) {
+				return `${this.roundToTwo(value / 1000)}k`
+			}
+
+			return `${this.roundToTwo(value)}`
+		},
 		getWidth() {
 			const result =
 				this.chart.width / this.results.length - this.chart.padding
@@ -139,6 +153,10 @@ svg {
 		font-family: monospace;
 		opacity: 0;
 		color: black;
+
+		&.value{
+			display: none;
+		}
 	}
 
 	p {
@@ -147,12 +165,17 @@ svg {
 	}
 
 	g:hover {
-		.rect{
+		cursor: pointer;
+		.rect {
 			fill: #ff9901;
-			cursor: pointer;
+			
 		}
-		.label{
+		.label {
 			color: #ff9901;
+
+			&.value{
+				display: block;
+			}
 		}
 	}
 }

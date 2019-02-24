@@ -3,9 +3,7 @@
     <aside class="container">
       <div class="block">
         <h1>Scope</h1>
-        <select v-model="queries[search.selectedQuery].scope">
-          <option v-for="(scope, index) in search.scopeTypes" :key="index" :value="scope">{{scope}}</option>
-        </select>
+        <SelectScopeType/>
 
         <h1>Terms</h1>
 
@@ -55,13 +53,7 @@
 						<SelectSearchType/>
 					</div>
           
-
-          <!-- <select v-model="search.searchType">
-            <option v-for="(type, index) in search.searchTypes" :value="type" :key="index">{{type}}</option>
-          </select>-->
         </div>
-
-        <!-- <h1 class="name">Github Search</h1> -->
 
         <select v-model="chart.type">
           <option value="bar">Bar</option>
@@ -69,6 +61,7 @@
         </select>
       </div>
 			<div class="content">
+				<h1 class="name">Github Search</h1>
       <template v-if="queries[search.selectedQuery].results.length">
         <template v-if="chart.type === 'bar'">
           <BarChart
@@ -97,6 +90,7 @@ import LineChart from '@/components/LineChart'
 import NoContent from '@/components/NoContent'
 import SelectDataSet from '@/components/SelectDataSet'
 import SelectSearchType from '@/components/SelectSearchType'
+import SelectScopeType from '@/components/SelectScopeType'
 import store from '@/store'
 
 export default {
@@ -107,13 +101,14 @@ export default {
 		LineChart,
 		NoContent,
 		SelectDataSet,
-		SelectSearchType
+		SelectSearchType,
+		SelectScopeType
 	},
 	data() {
 		return {
 			chart: {
 				type: 'bar',
-				height: 600,
+				height: 400,
 				width: 900,
 				padding: 5
 			},
