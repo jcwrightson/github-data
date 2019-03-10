@@ -9,15 +9,15 @@
 
         <div class="terms">
           <Search
-            v-for="(term, index) in queries[search.selectedQuery].terms"
+            v-for="(term, index) in terms"
             v-on:delete="handleDelete"
-            v-on:loading="handleLoading"
             v-on:result="handleResult"
-            :key="index"
-            :id="index"
-            :searchType="search.selectedType"
+            v-on:loading="handleLoading"
+            :key="`search_${index}`"
+            :index="index"
+            :searchType="selectedType"
             :searchTerm="term"
-            :scope="queries[search.selectedQuery].scope"
+            :scope="selectedScope"
           />
         </div>
         <div class="buttons">
@@ -43,16 +43,15 @@
             ></path>
           </svg>
 
-					<div class="selectBox">
-          	<label>Dataset:</label>
-						<SelectDataSet/>
-					</div>
+          <div class="selectBox">
+            <label>Dataset:</label>
+            <SelectDataSet/>
+          </div>
 
-					<div class="selectBox">
-          	<label>Datatype:</label>
-						<SelectSearchType/>
-					</div>
-          
+          <div class="selectBox">
+            <label>Datatype:</label>
+            <SelectSearchType/>
+          </div>
         </div>
 
         <select v-model="chart.type">
@@ -60,38 +59,35 @@
           <option value="line">Line</option>
         </select>
       </div>
-			<div class="content">
-				<h1 class="name">Github Search</h1>
-      <template v-if="queries[search.selectedQuery].results.length">
-        <template v-if="chart.type === 'bar'">
-          <BarChart
-            :chart="chart"
-            :loading="loading"
-            :results="queries[search.selectedQuery].results"
-          />
-        </template>
+      <div class="content">
+        <h1 class="name">Github Search</h1>
+        <template v-if="results.length">
+          <template v-if="chart.type === 'bar'">
+            <BarChart :chart="chart" :loading="loading" :results="results"/>
+          </template>
 
-        <template v-if="chart.type === 'line'">
-          <LineChart :chart="chart" :results="queries[search.selectedQuery].results"/>
+          <template v-if="chart.type === 'line'">
+            <LineChart :chart="chart"/>
+          </template>
         </template>
-      </template>
-      <template v-else>
-        <!-- <NoContent/> -->
-      </template>
-			</div>
+        <template v-else>
+          <!-- <NoContent/> -->
+        </template>
+      </div>
     </main>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Search from '@/components/Search'
 import BarChart from '@/components/BarChart'
 import LineChart from '@/components/LineChart'
-import NoContent from '@/components/NoContent'
-import SelectDataSet from '@/components/SelectDataSet'
-import SelectSearchType from '@/components/SelectSearchType'
-import SelectScopeType from '@/components/SelectScopeType'
-import store from '@/store'
+// import NoContent from '@/components/NoContent'
+import SelectDataSet from '@/components/selects/SelectDataSet'
+import SelectSearchType from '@/components/selects/SelectSearchType'
+import SelectScopeType from '@/components/selects/SelectScopeType'
+import { setTimeout } from 'timers'
 
 export default {
 	name: 'home',
@@ -99,7 +95,6 @@ export default {
 		Search,
 		BarChart,
 		LineChart,
-		NoContent,
 		SelectDataSet,
 		SelectSearchType,
 		SelectScopeType
@@ -112,50 +107,27 @@ export default {
 				width: 900,
 				padding: 5
 			},
-			loading: false
+			loading: false,
+			localResults: []
 		}
 	},
 	computed: {
-		search() {
-			return store.state.search
-		},
-		queries() {
-			return store.state.queries
-		}
+		...mapState({
+			queries: state => state.queries,
+			selectedQuery: state => state.search.selectedQuery,
+			selectedType: state => state.search.selectedType,
+			selectedScope: state =>
+				state.queries[state.search.selectedQuery].scope,
+			results: state => state.queries[state.search.selectedQuery].results,
+			terms: state => state.queries[state.search.selectedQuery].terms
+		})
 	},
 	methods: {
 		handleResult(result) {
-			const selectedQuery = this.search.selectedQuery
 
-			let results = this.queries[selectedQuery].results
-			results[result.id] = { ...result }
-
-			this.queries[selectedQuery].results = [...results]
-
-			// If custom query, remember term
-			if (selectedQuery === 'custom') {
-				this.queries[selectedQuery].terms[result.id] = result.query
-			}
-
-			this.loading = result.loading
 		},
-		handleDelete(payload) {
-			if (this.queries[this.search.selectedQuery].terms.length > 1) {
-				this.queries[this.search.selectedQuery].terms.splice(
-					payload.id,
-					1
-				)
-
-				if (
-					this.queries[this.search.selectedQuery].results.length >
-					this.queries[this.search.selectedQuery].terms.length
-				) {
-					this.queries[this.search.selectedQuery].results.splice(
-						payload.id,
-						1
-					)
-				}
-			}
+		handleDelete(result) {
+			this.$store.dispatch('HANDLE_DELETE', result)
 		},
 		handleLoading() {
 			this.loading = true
@@ -180,17 +152,18 @@ export default {
 			document.querySelector('main').classList.toggle('js-active')
 		}
 	},
-	mounted() {
-		const content = document.querySelector('.content')
-
+	created() {
+		const datasets = require('@/assets/datasets.json')
+		this.$store.dispatch('LOAD_QUERIES', datasets)
+		
+	},
+	mounted(){
+const content = document.querySelector('.content')
 		const contentWidth = content.clientWidth || content.innerWidth
-
-		this.chart = { ...this.chart, width: contentWidth - 300 }
-
+		this.chart = { ...this.chart, width: contentWidth - 230 }
 		window.addEventListener('resize', () => {
 			this.chart = { ...this.chart, width: contentWidth - 300 }
 		})
-
 		document.querySelector('.content').addEventListener('click', () => {
 			if (
 				document.querySelector('aside').classList.contains('js-active')
@@ -290,7 +263,8 @@ main {
 	flex-basis: 100%;
 }
 
-.chart, .content {
+.chart,
+.content {
 	width: 100%;
 	display: flex;
 	flex-direction: column;
@@ -333,9 +307,9 @@ button {
 		cursor: pointer;
 	}
 
-	.selectBox{
+	.selectBox {
 		margin-right: 3rem;
-		label{
+		label {
 			padding-right: 1rem;
 		}
 	}

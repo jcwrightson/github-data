@@ -9,8 +9,15 @@
         :height="`${chart.height}px`"
       >
         <template v-for="(result, index) in sortByLargestResult">
-          <g :key="result.id" requiredFeatures="http://www.w3.org/Graphics/SVG/feature/1.2/#TextFlow">
-            <rect class="rect" :width="`${getWidth()}px`" :fill="getGradiatedColor(result)"></rect>
+          <g :key="index" requiredFeatures="http://www.w3.org/Graphics/SVG/feature/1.2/#TextFlow">
+            <rect
+              class="rect"
+              :width="`${getWidth()}px`"
+              :height="getHeight(result)"
+              :x="0"
+							:y="`${chart.height}px`"
+              :fill="getGradiatedColor(result)"
+            ></rect>
 
             <text
               class="label value"
@@ -38,19 +45,21 @@
 
 <script>
 import { TweenLite } from 'gsap'
+import { mapState } from 'vuex'
+import store from '@/store'
 const TweenMax = TweenLite
 
 export default {
 	name: 'BarChart',
 	props: ['results', 'chart', 'loading'],
 	computed: {
+		...mapState({
+			queries: state => state.queries,
+			search: state => state.search
+		}),
 		sortByLargestResult: function() {
-			if (this.results.length) {
-				let results = [...this.results]
-				return results.sort((a, b) => b.value - a.value)
-			}
-
-			return this.results
+			let results = [...this.results]
+			return results.sort((a, b) => b.value - a.value)
 		}
 	},
 	methods: {
@@ -70,7 +79,7 @@ export default {
 		},
 		getWidth() {
 			const result =
-				this.chart.width / this.results.length - this.chart.padding
+				(this.chart.width / this.results.length) - this.chart.padding
 
 			if (result < 0) {
 				return 1
@@ -79,11 +88,13 @@ export default {
 			return result
 		},
 		getHeight(result) {
+
+
 			if (this.results.length < 2) {
 				return this.chart.height
 			}
 
-			let largestResult
+			let largestResult = 0
 
 			if (this.results.length > 1) {
 				largestResult = this.sortByLargestResult[0].value
@@ -111,38 +122,47 @@ export default {
 		},
 		animate() {
 			const bar = document.querySelectorAll('.rect')
+			const g = document.querySelectorAll('g')
 			const title = document.querySelectorAll('.label.title')
 			const value = document.querySelectorAll('.label.value')
+
+			// console.log(bar)
 
 			this.sortByLargestResult.map((result, index) => {
 				TweenMax.to(bar[index], 1, {
 					height: `${this.getHeight(result)}px`
 				}).delay(0.5)
 				TweenMax.to(bar[index], 1, {
-					y: `${this.getY(index, result)}px`
+					y: `${this.getY(index, result) - this.chart.height}px`
 				}).delay(0.5)
 				TweenMax.to(bar[index], 1, {
 					x: `${this.getX(index)}px`
+					// x: 0
 				}).delay(0.5)
 
 				TweenMax.to(value[index], 1, {
 					y: `${this.getY(index, result) - 10}px`
 				}).delay(0.5)
+				TweenMax.to(bar[index], 1, { opacity: 1 })
 				TweenMax.to(title[index], 2, { opacity: 1 }).delay(1)
 				TweenMax.to(value[index], 2, { opacity: 1 }).delay(2)
 			})
-		},
-		tweenedResult: x => {
-			// return Tween(0, x, 2)
 		}
 	},
 	mounted() {
+		// console.log('MOUNTED')
+		// console.table(this.results)
 		this.animate()
 	},
 	updated() {
+		// console.log('UPDATED')
+		// console.table(this.results)
 		this.animate()
 	},
-	created() {}
+	created() {
+		// console.log('CREATED')
+		// console.table(this.results)
+	}
 }
 </script>
 
@@ -151,29 +171,33 @@ svg {
 	.label {
 		text-transform: uppercase;
 		font-family: monospace;
-		opacity: 0;
+		opacity: 1;
 		color: black;
 
-		&.value{
+		&.value {
 			display: none;
 		}
 	}
 
+
 	p {
 		margin: 0;
 		font-size: 0.9rem;
+	}
+	.rect{
+		opacity: 0;
 	}
 
 	g:hover {
 		cursor: pointer;
 		.rect {
 			fill: #ff9901;
-			
+			// opacity: 0;
 		}
 		.label {
 			color: #ff9901;
 
-			&.value{
+			&.value {
 				display: block;
 			}
 		}

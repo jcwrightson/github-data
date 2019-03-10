@@ -5,7 +5,7 @@
 	</div>
 </template>
 <script>
-import SelectDataSet from '@/components/SelectDataSet'
+import SelectDataSet from '@/components/selects/SelectDataSet'
 export default {
 	name: 'NoContent',
 	props: [
