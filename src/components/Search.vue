@@ -66,27 +66,23 @@ export default {
 			update(data) {
 				return data
 			},
-			result({ data, loading }) {
+			result({ data }) {
 				this.search.results =
 					data.search.repositoryCount ||
 					data.search.userCount ||
 					data.search.issueCount ||
 					0
 
-				this.loading = loading
-
-				// this.$emit('result', {})
-
 				this.$store.dispatch('HANDLE_RESULT', {
 					query: this.search.term,
 					type: this.searchType,
 					value: this.search.results,
 					uid: this.uid,
-					loading
+					loading: false
 				})
 			},
 			error(error) {
-				console.error('Oops...', error)
+				console.error('ERROR: ', error)
 			},
 			skip() {
 				//Allow disable / enable fetching
@@ -99,8 +95,14 @@ export default {
 			this.triggerQuery()
 		},
 		triggerQuery() {
-			this.loading = true
-			this.$emit('loading', {})
+
+			this.$store.dispatch('HANDLE_RESULT', {
+					query: this.search.term,
+					type: this.searchType,
+					value: 0,
+					uid: this.uid,
+					loading: true
+				})
 
 			//Enable fetching
 			this.$apollo.queries.Search.skip = false
@@ -116,7 +118,7 @@ export default {
 
 				this.debounce = setTimeout(() => {
 					this.handleSearch()
-				}, 500)
+				}, 800)
 			}
 		},
 		handleDelete() {

@@ -61,7 +61,6 @@ export default new Vuex.Store({
 			]
 		},
 
-		// OLD
 		changeScopeType(state, value) {
 			state.queries[state.search.selectedQuery].scope = value
 		},
@@ -73,7 +72,9 @@ export default new Vuex.Store({
 			let exists = false
 			state.queries[state.search.selectedQuery].results.map(r => {
 				if (r.uid === result.uid) {
-					(r.value = result.value), (r.query = result.query)
+					r.value = result.value
+					r.query = result.query
+					r.loading = result.loading
 					exists = true
 				}
 			})

@@ -1,6 +1,9 @@
 <template>
   <div class="chart">
-    <template v-if="results.length">
+    <template v-if="isLoading">
+			<svg class="loading" width="100px"  height="100px"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style="background: none;"><circle cx="50" cy="50" fill="none" stroke="#333" stroke-width="6" r="35" stroke-dasharray="164.93361431346415 56.97787143782138" transform="rotate(29.8836 50 50)"><animateTransform attributeName="transform" type="rotate" calcMode="linear" values="0 50 50;360 50 50" keyTimes="0;1" dur="0.4s" begin="0s" repeatCount="indefinite"></animateTransform></circle></svg>
+		</template>
+    <template v-if="results.length && !isLoading">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -22,12 +25,14 @@
               :fill="getGradiatedColor(result)"
             ></rect>
 
+						<!-- ToDo Title and value have switched places -->
+
             <text
               class="label value"
               height="20px"
               :width="`${getWidth()}px`"
               :x="`${getX(index)}px`"
-							fill="#ff9901"
+              fill="#ff9901"
             >{{result.query}}</text>
 
             <foreignObject
@@ -63,6 +68,9 @@ export default {
 		sortByLargestResult: function() {
 			const results = this.results
 			return results.sort((a, b) => b.value - a.value)
+		},
+		isLoading: function() {
+			return this.results.filter(result => result.loading).length > 0
 		}
 	},
 	methods: {
@@ -145,16 +153,20 @@ export default {
 					x: `${this.getX(index, result)}px`
 				}).delay(0.5)
 				TweenMax.to(bar[index], 1, { opacity: 1 })
-				TweenMax.to(title[index], 2, { opacity: 1 }).delay(.5)
+				TweenMax.to(title[index], 2, { opacity: 1 }).delay(0.5)
 				TweenMax.to(value[index], 2, { opacity: 1 }).delay(2)
 			})
 		}
 	},
 	mounted() {
-		this.animate()
+		if (!this.isLoading) {
+			this.animate()
+		}
 	},
 	updated() {
-		this.animate()
+		if (!this.isLoading) {
+			this.animate()
+		}
 	}
 }
 </script>
@@ -164,7 +176,6 @@ svg {
 	.label {
 		text-transform: uppercase;
 		font-family: monospace;
-		// opacity: 1;
 		color: #fff !important;
 
 		&.value {
@@ -177,16 +188,6 @@ svg {
 		position: relative;
 		color: #fff;
 	}
-
-	p {
-		margin: 0;
-		font-size: 0.9rem;
-		z-index: 100;
-		transform: rotate(90deg);
-		// width: 200px;
-		opacity: 0;
-		
-	}
 	.rect {
 		opacity: 0;
 	}
@@ -195,7 +196,6 @@ svg {
 		cursor: pointer;
 		.rect {
 			fill: #ff9901;
-			// opacity: 0;
 		}
 		.label {
 			color: #ff9901;

@@ -187,7 +187,7 @@ aside.container {
 aside {
 	position: fixed;
 	min-height: 100vh;
-	background-color: #333;
+	background-color: #222;
 	color: white;
 	left: -300px;
 
@@ -302,6 +302,13 @@ button {
 			padding-right: 1rem;
 		}
 	}
+}
+
+.loading{
+	position: fixed;
+	top:50%;
+	left:50%;
+	transform: translate(-50%, -50%);
 }
 
 svg {
