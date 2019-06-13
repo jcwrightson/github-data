@@ -1,6 +1,12 @@
-# github-data-visualisation
+# Github Data
 
-This app uses data visualisation to compare data-points on github.
+This app harnesses the GitHub GraphQL API to search for terms such as programming languages, geographic locations, repo license types, or literal strings and returns the number of repositories, users, or issues that meet this criteria. 
+
+The results are then displayed visually.
+
+DEMO: https://madebywrightson.com/github-data
+
+## Development
 
 Include a `.env.local` file in the project root with a personal access token with public scope:
 

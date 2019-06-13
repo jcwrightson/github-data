@@ -1,11 +1,23 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { uuidv4 } from '@/assets/utils'
 
 Vue.use(Vuex)
 
+const datasets = require('@/assets/datasets.json')
+
+// Retrofit term uuids
+for (const set in datasets) {
+	const newTerms = []
+	datasets[set].terms.map(term => {
+		newTerms.push({ value: term, uid: uuidv4() })
+	})
+	datasets[set].terms = [...newTerms]
+}
+
 export default new Vuex.Store({
 	state: {
-		queries: {},
+		queries: { ...datasets },
 		search: {
 			searchTypes: ['REPOSITORY', 'USER', 'ISSUE'],
 			scopeTypes: ['literal', 'location', 'language', 'license'],
@@ -19,14 +31,37 @@ export default new Vuex.Store({
 		}
 	},
 	mutations: {
-		changeDataSet(state, value) {
+		updateDataSet(state, value) {
 			state.search.selectedQuery = value
 		},
-
-		changeSearchType(state, value) {
+		updateSearchType(state, value) {
 			state.search.selectedType = value
 		},
+		newTerm(state, value) {
+			state.queries[state.search.selectedQuery].terms.push({
+				value: value,
+				uid: uuidv4()
+			})
+		},
+		updateTerms(state, terms) {
+			state.queries[state.search.selectedQuery].terms = [...terms]
+		},
+		removeTerm(state, uid) {
+			state.queries[state.search.selectedQuery].terms = [
+				...state.queries[state.search.selectedQuery].terms.filter(
+					term => term.uid !== uid
+				)
+			]
+		},
+		removeResult(state, uid) {
+			state.queries[state.search.selectedQuery].results = [
+				...state.queries[state.search.selectedQuery].results.filter(
+					result => result.uid !== uid
+				)
+			]
+		},
 
+		// OLD
 		changeScopeType(state, value) {
 			state.queries[state.search.selectedQuery].scope = value
 		},
@@ -34,14 +69,11 @@ export default new Vuex.Store({
 		toggleModal(state, modal) {
 			state.modals[modal].active = !state.modals[modal].active
 		},
-		QUERIES(state, value) {
-			state.queries = { ...value }
-		},
 		UPDATE_RESULT(state, result) {
 			let exists = false
 			state.queries[state.search.selectedQuery].results.map(r => {
-				if (r.index === result.index) {
-					r.value = result.value
+				if (r.uid === result.uid) {
+					(r.value = result.value), (r.query = result.query)
 					exists = true
 				}
 			})
@@ -51,17 +83,9 @@ export default new Vuex.Store({
 			}
 		},
 		UPDATE_TERMS(state, result) {
-			state.queries[state.search.selectedQuery].terms[result.index] =
-				result.query
-		},
-		DELETE_RESULT(state, result) {
-			state.queries[result.type].results.splice(result.index, 1)
-		},
-		DELETE_TERM(state, result) {
-			state.queries[state.search.selectedQuery].terms.splice(
-				result.index,
-				1
-			)
+			state.queries[state.search.selectedQuery].terms.filter(
+				term => term.uid === result.uid
+			)[0].value = result.query
 		}
 	},
 	actions: {
@@ -73,12 +97,9 @@ export default new Vuex.Store({
 				commit('UPDATE_TERMS', result)
 			}
 		},
-		HANDLE_DELETE({ commit }, result) {
-			commit('DELETE_TERM', result)
-			commit('DELETE_RESULT', result)
-		},
-		LOAD_QUERIES({ commit }, payload) {
-			commit('QUERIES', payload)
+		HANDLE_DELETE({ commit }, uid) {
+			commit('removeTerm', uid)
+			commit('removeResult', uid)
 		}
 	}
 })

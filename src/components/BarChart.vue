@@ -9,13 +9,16 @@
         :height="`${chart.height}px`"
       >
         <template v-for="(result, index) in sortByLargestResult">
-          <g :key="index" requiredFeatures="http://www.w3.org/Graphics/SVG/feature/1.2/#TextFlow">
+          <g
+            :key="`bar_${result.uid}`"
+            requiredFeatures="http://www.w3.org/Graphics/SVG/feature/1.2/#TextFlow"
+          >
             <rect
               class="rect"
               :width="`${getWidth()}px`"
               :height="getHeight(result)"
               :x="0"
-							:y="`${chart.height}px`"
+              :y="`${chart.height}px`"
               :fill="getGradiatedColor(result)"
             ></rect>
 
@@ -24,17 +27,18 @@
               height="20px"
               :width="`${getWidth()}px`"
               :x="`${getX(index)}px`"
-            >{{prettyValue(result.value)}}</text>
+							fill="#ff9901"
+            >{{result.query}}</text>
 
             <foreignObject
               class="label title"
-              :x="`${getX(index)}px`"
-              :y="chart.height + 10"
+              :x="0"
+              :y="chart.height"
               :width="`${getWidth()}px`"
-              height="130px"
+              height="160px"
               requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"
             >
-              <p xmlns="http://www.w3.org/1999/xhtml">{{result.query}}</p>
+              <div xmlns="http://www.w3.org/1999/xhtml">{{prettyValue(result.value)}}</div>
             </foreignObject>
           </g>
         </template>
@@ -46,7 +50,6 @@
 <script>
 import { TweenLite } from 'gsap'
 import { mapState } from 'vuex'
-import store from '@/store'
 const TweenMax = TweenLite
 
 export default {
@@ -58,7 +61,7 @@ export default {
 			search: state => state.search
 		}),
 		sortByLargestResult: function() {
-			let results = [...this.results]
+			const results = this.results
 			return results.sort((a, b) => b.value - a.value)
 		}
 	},
@@ -79,7 +82,7 @@ export default {
 		},
 		getWidth() {
 			const result =
-				(this.chart.width / this.results.length) - this.chart.padding
+				this.chart.width / this.results.length - this.chart.padding
 
 			if (result < 0) {
 				return 1
@@ -88,8 +91,6 @@ export default {
 			return result
 		},
 		getHeight(result) {
-
-
 			if (this.results.length < 2) {
 				return this.chart.height
 			}
@@ -122,11 +123,8 @@ export default {
 		},
 		animate() {
 			const bar = document.querySelectorAll('.rect')
-			const g = document.querySelectorAll('g')
 			const title = document.querySelectorAll('.label.title')
 			const value = document.querySelectorAll('.label.value')
-
-			// console.log(bar)
 
 			this.sortByLargestResult.map((result, index) => {
 				TweenMax.to(bar[index], 1, {
@@ -134,34 +132,29 @@ export default {
 				}).delay(0.5)
 				TweenMax.to(bar[index], 1, {
 					y: `${this.getY(index, result) - this.chart.height}px`
-				}).delay(0.5)
+				}).delay(0.1)
 				TweenMax.to(bar[index], 1, {
 					x: `${this.getX(index)}px`
-					// x: 0
 				}).delay(0.5)
 
 				TweenMax.to(value[index], 1, {
 					y: `${this.getY(index, result) - 10}px`
+				}).delay(0.25)
+
+				TweenMax.to(title[index], 1, {
+					x: `${this.getX(index, result)}px`
 				}).delay(0.5)
 				TweenMax.to(bar[index], 1, { opacity: 1 })
-				TweenMax.to(title[index], 2, { opacity: 1 }).delay(1)
+				TweenMax.to(title[index], 2, { opacity: 1 }).delay(.5)
 				TweenMax.to(value[index], 2, { opacity: 1 }).delay(2)
 			})
 		}
 	},
 	mounted() {
-		// console.log('MOUNTED')
-		// console.table(this.results)
 		this.animate()
 	},
 	updated() {
-		// console.log('UPDATED')
-		// console.table(this.results)
 		this.animate()
-	},
-	created() {
-		// console.log('CREATED')
-		// console.table(this.results)
 	}
 }
 </script>
@@ -171,20 +164,30 @@ svg {
 	.label {
 		text-transform: uppercase;
 		font-family: monospace;
-		opacity: 1;
-		color: black;
+		// opacity: 1;
+		color: #fff !important;
 
 		&.value {
 			display: none;
 		}
 	}
 
+	foreignObject {
+		overflow: visible;
+		position: relative;
+		color: #fff;
+	}
 
 	p {
 		margin: 0;
 		font-size: 0.9rem;
+		z-index: 100;
+		transform: rotate(90deg);
+		// width: 200px;
+		opacity: 0;
+		
 	}
-	.rect{
+	.rect {
 		opacity: 0;
 	}
 
@@ -199,6 +202,7 @@ svg {
 
 			&.value {
 				display: block;
+				color: #ff9901;
 			}
 		}
 	}

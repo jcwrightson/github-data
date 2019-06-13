@@ -9,65 +9,63 @@
 
         <div class="terms">
           <Search
-            v-for="(term, index) in terms"
+            v-for="term in terms"
             v-on:delete="handleDelete"
-            v-on:result="handleResult"
             v-on:loading="handleLoading"
-            :key="`search_${index}`"
-            :index="index"
+            :key="`TERM_${term.uid}`"
+            :uid="term.uid"
             :searchType="selectedType"
-            :searchTerm="term"
+            :searchTerm="term.value"
             :scope="selectedScope"
           />
         </div>
         <div class="buttons">
-          <button v-on:click="handleDecrement">-</button>
-          <button v-on:click="handleIncrement">+</button>
+          <button v-on:click="handleIncrement">Add Term</button>
         </div>
       </div>
 
-      <div class="block">
-        <h1>Datasets</h1>
-        <SelectDataSet/>
-      </div>
+     
     </aside>
 
     <main>
       <div class="top row">
-        <div style="display:flex; flex-direction:row; align-items:center;">
-          <svg v-on:click="toggleSideBar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 12">
-            <path
-              id="ic_menu_24px"
-              d="M3,18H21V16H3Zm0-5H21V11H3ZM3,6V8H21V6Z"
-              transform="translate(-3 -6)"
-            ></path>
-          </svg>
-
+        <div class="flex-row">
+          <svg @click="toggleSideBar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.454 20">
+  <path id="ic_settings_24px" d="M19.43,12.98A7.793,7.793,0,0,0,19.5,12a7.793,7.793,0,0,0-.07-.98l2.11-1.65a.5.5,0,0,0,.12-.64l-2-3.46a.5.5,0,0,0-.61-.22l-2.49,1a7.306,7.306,0,0,0-1.69-.98l-.38-2.65A.488.488,0,0,0,14,2H10a.488.488,0,0,0-.49.42L9.13,5.07a7.683,7.683,0,0,0-1.69.98l-2.49-1a.488.488,0,0,0-.61.22l-2,3.46a.493.493,0,0,0,.12.64l2.11,1.65A7.931,7.931,0,0,0,4.5,12a7.931,7.931,0,0,0,.07.98L2.46,14.63a.5.5,0,0,0-.12.64l2,3.46a.5.5,0,0,0,.61.22l2.49-1a7.306,7.306,0,0,0,1.69.98l.38,2.65A.488.488,0,0,0,10,22h4a.488.488,0,0,0,.49-.42l.38-2.65a7.683,7.683,0,0,0,1.69-.98l2.49,1a.488.488,0,0,0,.61-.22l2-3.46a.5.5,0,0,0-.12-.64ZM12,15.5A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z" transform="translate(-2.271 -2)"/>
+</svg>
+          <h1>Github Data</h1>
+        </div>
+        <div class="flex-row">
           <div class="selectBox">
             <label>Dataset:</label>
             <SelectDataSet/>
           </div>
 
           <div class="selectBox">
-            <label>Datatype:</label>
+            <label>Type:</label>
             <SelectSearchType/>
           </div>
-        </div>
 
-        <select v-model="chart.type">
-          <option value="bar">Bar</option>
-          <option value="line">Line</option>
-        </select>
+          <div class="selectBox">
+            <label>Chart:</label>
+            <select v-model="chart.type">
+              <option value="bar">Bar</option>
+              <!-- <option value="line">Line</option> -->
+            </select>
+          </div>
+        </div>
       </div>
       <div class="content">
-        <h1 class="name">Github Search</h1>
         <template v-if="results.length">
+          <div>
+            <h1 class="title">{{chartTitle()}}</h1>
+          </div>
           <template v-if="chart.type === 'bar'">
             <BarChart :chart="chart" :loading="loading" :results="results"/>
           </template>
 
           <template v-if="chart.type === 'line'">
-            <LineChart :chart="chart"/>
+            <!-- <LineChart :chart="chart" :results="results"/> -->
           </template>
         </template>
         <template v-else>
@@ -82,19 +80,15 @@
 import { mapState } from 'vuex'
 import Search from '@/components/Search'
 import BarChart from '@/components/BarChart'
-import LineChart from '@/components/LineChart'
-// import NoContent from '@/components/NoContent'
 import SelectDataSet from '@/components/selects/SelectDataSet'
 import SelectSearchType from '@/components/selects/SelectSearchType'
 import SelectScopeType from '@/components/selects/SelectScopeType'
-import { setTimeout } from 'timers'
 
 export default {
 	name: 'home',
 	components: {
 		Search,
 		BarChart,
-		LineChart,
 		SelectDataSet,
 		SelectSearchType,
 		SelectScopeType
@@ -123,42 +117,25 @@ export default {
 		})
 	},
 	methods: {
-		handleResult(result) {
-
-		},
-		handleDelete(result) {
-			this.$store.dispatch('HANDLE_DELETE', result)
+		handleDelete(uid) {
+			this.$store.dispatch('HANDLE_DELETE', uid)
 		},
 		handleLoading() {
 			this.loading = true
 		},
 		handleIncrement() {
-			this.queries[this.search.selectedQuery].terms.push('')
-		},
-		handleDecrement() {
-			if (this.queries[this.search.selectedQuery].terms.length > 1) {
-				this.queries[this.search.selectedQuery].terms.pop()
-
-				if (
-					this.queries[this.search.selectedQuery].results.length >
-					this.queries[this.search.selectedQuery].terms.length
-				) {
-					this.queries[this.search.selectedQuery].results.pop()
-				}
-			}
+			this.$store.commit('newTerm', '')
 		},
 		toggleSideBar() {
 			document.querySelector('aside').classList.toggle('js-active')
 			document.querySelector('main').classList.toggle('js-active')
+		},
+		chartTitle() {
+			return `Showing ${this.selectedScope} by ${this.selectedType}`
 		}
 	},
-	created() {
-		const datasets = require('@/assets/datasets.json')
-		this.$store.dispatch('LOAD_QUERIES', datasets)
-		
-	},
-	mounted(){
-const content = document.querySelector('.content')
+	mounted() {
+		const content = document.querySelector('.content')
 		const contentWidth = content.clientWidth || content.innerWidth
 		this.chart = { ...this.chart, width: contentWidth - 230 }
 		window.addEventListener('resize', () => {
@@ -171,6 +148,8 @@ const content = document.querySelector('.content')
 				this.toggleSideBar()
 			}
 		})
+
+		this.$store.commit('updateDataSet', 'languages')
 	}
 }
 </script>
@@ -179,6 +158,12 @@ const content = document.querySelector('.content')
 .home {
 	min-height: 100vh;
 	display: flex;
+}
+
+h1.title{
+	margin: 5rem 0;
+	font-weight: 300;
+	font-size: 1rem;
 }
 
 h1.name {
@@ -202,7 +187,7 @@ aside.container {
 aside {
 	position: fixed;
 	min-height: 100vh;
-	background-color: #595959;
+	background-color: #333;
 	color: white;
 	left: -300px;
 
@@ -229,13 +214,18 @@ aside {
 		}
 	}
 
+	h1:first-of-type {
+		margin-top: 0;
+	}
+
 	.buttons {
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
-
+		margin-top: 1rem;
 		button {
-			flex-basis: 49%;
+			flex-basis: 100%;
+
 		}
 	}
 }
@@ -244,12 +234,6 @@ main {
 	.container {
 		width: auto;
 	}
-
-	// .content {
-	// 	display: flex;
-	// 	flex-direction: column;
-	// 	height: 100%;
-	// }
 
 	&.js-active {
 		left: 300px;
@@ -271,17 +255,19 @@ main {
 	align-items: center;
 	justify-content: center;
 	height: 100%;
-	background-color: #f2f2f2;
+	background-color: black;
+	color: #fff;
 }
 
 input,
 select,
 button {
-	padding: 0.6rem 1rem;
+	padding: 0.5rem 0.8rem;
 	background-color: transparent;
 	border: 1px solid white;
-	color: white;
-	border-radius: 3px;
+	color: #fff;
+	border-radius: 6px;
+	font-family: 'Inconsolata';
 
 	option {
 		color: black;
@@ -295,8 +281,7 @@ button {
 
 .top {
 	margin: 0;
-	// background-color: #398585;
-	background-color: #292929;
+	background-color: #222;
 	padding: 1rem 2rem;
 	color: white;
 	svg {
@@ -308,7 +293,11 @@ button {
 	}
 
 	.selectBox {
-		margin-right: 3rem;
+		margin-right: 2rem;
+		&:last-of-type {
+			margin-right: 0;
+		}
+
 		label {
 			padding-right: 1rem;
 		}

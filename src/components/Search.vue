@@ -7,7 +7,7 @@
       v-on:keydown="handleKeyDown"
       :class="loading ? 'loading' : ''"
     >
-    
+
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" v-on:click="handleDelete">
       <path
         id="ic_remove_circle_outline_24px"
@@ -34,7 +34,7 @@ const Query = gql`
 
 export default {
 	name: 'Search',
-	props: ['searchType', 'index', 'searchTerm', 'scope'],
+	props: ['searchType', 'index', 'searchTerm', 'scope', 'uid'],
 	data() {
 		return {
 			search: {
@@ -75,13 +75,13 @@ export default {
 
 				this.loading = loading
 
-				this.$emit('result', {})
+				// this.$emit('result', {})
 
 				this.$store.dispatch('HANDLE_RESULT', {
 					query: this.search.term,
 					type: this.searchType,
 					value: this.search.results,
-					index: this.index,
+					uid: this.uid,
 					loading
 				})
 			},
@@ -120,13 +120,7 @@ export default {
 			}
 		},
 		handleDelete() {
-			this.$emit('delete', {
-				query: this.search.term,
-				type: this.searchType,
-				value: this.search.results,
-				index: this.index,
-				deleted: true
-			})
+			this.$emit('delete', this.uid)
 		}
 	},
 	watch: {

@@ -1,25 +1,21 @@
 <template>
-	 <div class="container">
-		<h1>Select a dataset to get started</h1>
-		<SelectDataSet />
-	</div>
+  <div class="container">
+    <h1>Select a dataset to get started</h1>
+    <SelectDataSet/>
+  </div>
 </template>
 <script>
 import SelectDataSet from '@/components/selects/SelectDataSet'
 export default {
 	name: 'NoContent',
-	props: [
-		'chart',
-		'queries',
-		'model'
-	],
-	components:{
+	props: ['chart', 'queries', 'model'],
+	components: {
 		SelectDataSet
 	}
 }
 </script>
 <style lang="scss" scoped>
-select{
+select {
 	color: black;
 	border-color: black;
 }
