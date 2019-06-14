@@ -2,11 +2,11 @@
   <div class="chart">
     <svg class="pie">
       <g>
-        <g v-for="arc in arcs" :key="arc.index" class="slice">
-          <path :d="createArcPath(arc)" :fill="getColor(arc)" :stroke="getColor(arc)"></path>
+        <g v-for="slice in pie" :key="slice.index" class="slice">
+          <path :d="createArc(slice)" :fill="getColor(slice)" :stroke="getColor(slice)"></path>
           <g transform="translate(-20,0)">
-            <text class="label" :x="0" :y="0">{{prettyValue(arc.value)}}</text>
-            <text class="label" :x="0" :y="10">{{arc.data.query}}</text>
+            <text class="label" :x="0" :y="0">{{prettyValue(slice.value)}}</text>
+            <text class="label" :x="0" :y="10">{{slice.data.query}}</text>
           </g>
         </g>
       </g>
@@ -34,17 +34,13 @@ export default {
 			queries: state => state.queries,
 			search: state => state.search
 		}),
-		sortByLargestResult: function() {
-			const results = this.results
-			return results.sort((a, b) => b.value - a.value)
-		},
 		isLoading: function() {
 			return this.results.filter(result => result.loading).length > 0
 		},
 		pieChart: function() {
 			return d3.select('.pie')
 		},
-		arcs: function() {
+		pie: function() {
 			return d3.pie().value(d => d.value[this.search.selectedType])(
 				this.results
 			)
@@ -58,13 +54,13 @@ export default {
 			const step = (100 / this.results.length) * result.index
 			return `hsla(180, 40%, ${95 - step}%, 1)`
 		},
-		createArcPath(result) {
+		createArc(slice) {
 			const arc = d3
 				.arc()
 				.innerRadius(this.radius * 0.6)
 				.outerRadius(this.radius)
-				.startAngle(result.startAngle)
-				.endAngle(result.endAngle)
+				.startAngle(slice.startAngle)
+				.endAngle(slice.endAngle)
 
 			return arc()
 		},
