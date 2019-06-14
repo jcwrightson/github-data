@@ -6,6 +6,13 @@ The results are then displayed visually.
 
 DEMO: https://madebywrightson.com/github-data
 
+## Charts
+
+- Bar (SVG)
+- Pie / Donut (D3.js)
+- Point (CSS)
+
+
 ## Development
 
 Include a `.env.local` file in the project root with a personal access token with public scope:
