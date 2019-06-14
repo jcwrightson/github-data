@@ -87,7 +87,7 @@
             <select v-model="chart.type">
               <option value="bar">Bar</option>
               <option value="pie">Donut</option>
-              <!-- <option value="line">Line</option> -->
+              <option value="point">Point</option>
             </select>
           </div>
         </div>
@@ -105,8 +105,8 @@
             <PieChart :chart="chart" :loading="loading" :results="results"/>
           </template>
 
-          <template v-if="chart.type === 'line'">
-            <!-- <LineChart :chart="chart" :results="results"/> -->
+          <template v-if="chart.type === 'point'">
+            <PointChart :chart="chart" :loading="loading" :results="results"/>
           </template>
         </template>
         <template v-else>
@@ -122,6 +122,7 @@ import { mapState } from 'vuex'
 import Search from '@/components/Search'
 import BarChart from '@/components/BarChart'
 import PieChart from '@/components/PieChart'
+import PointChart from '@/components/PointChart'
 import SelectDataSet from '@/components/selects/SelectDataSet'
 import SelectSearchType from '@/components/selects/SelectSearchType'
 import SelectScopeType from '@/components/selects/SelectScopeType'
@@ -132,6 +133,7 @@ export default {
 		Search,
 		BarChart,
 		PieChart,
+		PointChart,
 		SelectDataSet,
 		SelectSearchType,
 		SelectScopeType
@@ -160,6 +162,14 @@ export default {
 		}),
 		isLoading: function() {
 			return this.results.filter(result => result.loading).length > 0
+		},
+		sortByLargestResult: function() {
+			const results = this.results
+			return results.sort(
+				(a, b) =>
+					b.value[this.selectedType] -
+					a.value[this.selectedType]
+			)
 		}
 	},
 	methods: {
@@ -301,7 +311,7 @@ main {
 	align-items: center;
 	justify-content: center;
 	height: 100%;
-	background-color: black;
+	background-color: rgb(12, 12, 12);
 	color: #fff;
 }
 

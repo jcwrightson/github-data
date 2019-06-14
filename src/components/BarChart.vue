@@ -68,7 +68,7 @@ export default {
 			search: state => state.search
 		}),
 		sortByLargestResult: function() {
-			const results = this.results
+			const results = [...this.results]
 			return results.sort(
 				(a, b) =>
 					b.value[this.search.selectedType] -
