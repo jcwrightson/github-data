@@ -1,8 +1,5 @@
 <template>
   <div class="chart">
-    <template v-if="isLoading">
-			<svg class="loading" width="100px"  height="100px"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style="background: none;"><circle cx="50" cy="50" fill="none" stroke="#333" stroke-width="6" r="35" stroke-dasharray="164.93361431346415 56.97787143782138" transform="rotate(29.8836 50 50)"><animateTransform attributeName="transform" type="rotate" calcMode="linear" values="0 50 50;360 50 50" keyTimes="0;1" dur="0.4s" begin="0s" repeatCount="indefinite"></animateTransform></circle></svg>
-		</template>
     <template v-if="results.length && !isLoading">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -22,10 +19,10 @@
               :height="getHeight(result)"
               :x="0"
               :y="`${chart.height}px`"
-              :fill="getGradiatedColor(result)"
+              :fill="getColor(result, index)"
             ></rect>
 
-						<!-- ToDo Title and value have switched places -->
+            <!-- ToDo Title and value have switched places -->
 
             <text
               class="label value"
@@ -43,7 +40,12 @@
               height="160px"
               requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"
             >
-              <div xmlns="http://www.w3.org/1999/xhtml">{{prettyValue(result.value[search.selectedType])}}</div>
+              <div xmlns="http://www.w3.org/1999/xhtml">
+                <template
+                  v-if="result.value[search.selectedType]"
+                >{{prettyValue(result.value[search.selectedType])}}</template>
+                <template v-else>...</template>
+              </div>
             </foreignObject>
           </g>
         </template>
@@ -67,7 +69,11 @@ export default {
 		}),
 		sortByLargestResult: function() {
 			const results = this.results
-			return results.sort((a, b) => b.value[this.search.selectedType] - a.value[this.search.selectedType])
+			return results.sort(
+				(a, b) =>
+					b.value[this.search.selectedType] -
+					a.value[this.search.selectedType]
+			)
 		},
 		isLoading: function() {
 			return this.results.filter(result => result.loading).length > 0
@@ -106,10 +112,13 @@ export default {
 			let largestResult = 0
 
 			if (this.results.length > 1) {
-				largestResult = this.sortByLargestResult[0].value[this.search.selectedType]
+				largestResult = this.sortByLargestResult[0].value[
+					this.search.selectedType
+				]
 			}
 
-			const proportion = largestResult / result.value[this.search.selectedType]
+			const proportion =
+				largestResult / result.value[this.search.selectedType]
 
 			const height = Math.floor(this.chart.height / proportion)
 
@@ -125,9 +134,9 @@ export default {
 		getY(index, result) {
 			return this.chart.height - this.getHeight(result)
 		},
-		getGradiatedColor(result) {
-			const proportion = this.chart.height / this.getHeight(result)
-			return `hsla(180, 40%, ${95 / proportion}%, 1)`
+		getColor(result, index) {
+			const step = (100 / this.results.length) * index
+			return `hsla(180, 40%, ${95 - step}%, 1)`
 		},
 		animate() {
 			const bar = document.querySelectorAll('.rect')

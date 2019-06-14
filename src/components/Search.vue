@@ -66,7 +66,8 @@ export default {
 			update(data) {
 				return data
 			},
-			result({ data }) {
+			result({ data, loading }) {
+				this.loading = loading
 				this.search.results =
 					data.search.repositoryCount ||
 					data.search.userCount ||
@@ -97,16 +98,17 @@ export default {
 			this.triggerQuery()
 		},
 		triggerQuery() {
+			this.loading = true
 
 			this.$store.dispatch('HANDLE_RESULT', {
-					query: this.search.term,
-					type: this.searchType,
-					value: {
-						[this.searchType]: 0
-					},
-					uid: this.uid,
-					loading: true
-				})
+				query: this.search.term,
+				type: this.searchType,
+				value: {
+					[this.searchType]: 0
+				},
+				uid: this.uid,
+				loading: true
+			})
 
 			//Enable fetching
 			this.$apollo.queries.Search.skip = false

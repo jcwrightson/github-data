@@ -95,25 +95,5 @@
 			"c++", 
 			"c"],
 		"results": []
-	},
-	"database": {
-		"parent": "database",
-		"label": "language: Database",
-		"scope": "language",
-		"terms": [
-			"microsoft sql server", 
-			"mysql", 
-			"mongodb", 
-			"oracle", 
-			"ibm db2", 
-			"postgresql", 
-			"mariadb", 
-			"sap sybase ase", 
-			"teradata", 
-			"informix", 
-			"ingres", 
-			"amazon simple db"
-		],
-		"results": []
 	}
 }

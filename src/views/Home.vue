@@ -1,5 +1,39 @@
 <template>
   <div class="home">
+    <template v-if="isLoading">
+      <svg
+        class="spinner"
+        width="100px"
+        height="100px"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="xMidYMid"
+        style="background: none;"
+      >
+        <circle
+          cx="50"
+          cy="50"
+          fill="none"
+          stroke="#333"
+          stroke-width="6"
+          r="35"
+          stroke-dasharray="164.93361431346415 56.97787143782138"
+          transform="rotate(29.8836 50 50)"
+        >
+          <animateTransform
+            attributeName="transform"
+            type="rotate"
+            calcMode="linear"
+            values="0 50 50;360 50 50"
+            keyTimes="0;1"
+            dur="0.4s"
+            begin="0s"
+            repeatCount="indefinite"
+          ></animateTransform>
+        </circle>
+      </svg>
+    </template>
+
     <aside class="container">
       <div class="block">
         <h1>Scope</h1>
@@ -23,16 +57,18 @@
           <button v-on:click="handleIncrement">Add Term</button>
         </div>
       </div>
-
-     
     </aside>
 
     <main>
       <div class="top row">
         <div class="flex-row">
           <svg @click="toggleSideBar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.454 20">
-  <path id="ic_settings_24px" d="M19.43,12.98A7.793,7.793,0,0,0,19.5,12a7.793,7.793,0,0,0-.07-.98l2.11-1.65a.5.5,0,0,0,.12-.64l-2-3.46a.5.5,0,0,0-.61-.22l-2.49,1a7.306,7.306,0,0,0-1.69-.98l-.38-2.65A.488.488,0,0,0,14,2H10a.488.488,0,0,0-.49.42L9.13,5.07a7.683,7.683,0,0,0-1.69.98l-2.49-1a.488.488,0,0,0-.61.22l-2,3.46a.493.493,0,0,0,.12.64l2.11,1.65A7.931,7.931,0,0,0,4.5,12a7.931,7.931,0,0,0,.07.98L2.46,14.63a.5.5,0,0,0-.12.64l2,3.46a.5.5,0,0,0,.61.22l2.49-1a7.306,7.306,0,0,0,1.69.98l.38,2.65A.488.488,0,0,0,10,22h4a.488.488,0,0,0,.49-.42l.38-2.65a7.683,7.683,0,0,0,1.69-.98l2.49,1a.488.488,0,0,0,.61-.22l2-3.46a.5.5,0,0,0-.12-.64ZM12,15.5A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z" transform="translate(-2.271 -2)"/>
-</svg>
+            <path
+              id="ic_settings_24px"
+              d="M19.43,12.98A7.793,7.793,0,0,0,19.5,12a7.793,7.793,0,0,0-.07-.98l2.11-1.65a.5.5,0,0,0,.12-.64l-2-3.46a.5.5,0,0,0-.61-.22l-2.49,1a7.306,7.306,0,0,0-1.69-.98l-.38-2.65A.488.488,0,0,0,14,2H10a.488.488,0,0,0-.49.42L9.13,5.07a7.683,7.683,0,0,0-1.69.98l-2.49-1a.488.488,0,0,0-.61.22l-2,3.46a.493.493,0,0,0,.12.64l2.11,1.65A7.931,7.931,0,0,0,4.5,12a7.931,7.931,0,0,0,.07.98L2.46,14.63a.5.5,0,0,0-.12.64l2,3.46a.5.5,0,0,0,.61.22l2.49-1a7.306,7.306,0,0,0,1.69.98l.38,2.65A.488.488,0,0,0,10,22h4a.488.488,0,0,0,.49-.42l.38-2.65a7.683,7.683,0,0,0,1.69-.98l2.49,1a.488.488,0,0,0,.61-.22l2-3.46a.5.5,0,0,0-.12-.64ZM12,15.5A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"
+              transform="translate(-2.271 -2)"
+            ></path>
+          </svg>
           <h1>Github Data</h1>
         </div>
         <div class="flex-row">
@@ -50,6 +86,7 @@
             <label>Chart:</label>
             <select v-model="chart.type">
               <option value="bar">Bar</option>
+              <option value="pie">Donut</option>
               <!-- <option value="line">Line</option> -->
             </select>
           </div>
@@ -62,6 +99,10 @@
           </div>
           <template v-if="chart.type === 'bar'">
             <BarChart :chart="chart" :loading="loading" :results="results"/>
+          </template>
+
+          <template v-if="chart.type === 'pie'">
+            <PieChart :chart="chart" :loading="loading" :results="results"/>
           </template>
 
           <template v-if="chart.type === 'line'">
@@ -80,6 +121,7 @@
 import { mapState } from 'vuex'
 import Search from '@/components/Search'
 import BarChart from '@/components/BarChart'
+import PieChart from '@/components/PieChart'
 import SelectDataSet from '@/components/selects/SelectDataSet'
 import SelectSearchType from '@/components/selects/SelectSearchType'
 import SelectScopeType from '@/components/selects/SelectScopeType'
@@ -89,6 +131,7 @@ export default {
 	components: {
 		Search,
 		BarChart,
+		PieChart,
 		SelectDataSet,
 		SelectSearchType,
 		SelectScopeType
@@ -114,7 +157,10 @@ export default {
 				state.queries[state.search.selectedQuery].scope,
 			results: state => state.queries[state.search.selectedQuery].results,
 			terms: state => state.queries[state.search.selectedQuery].terms
-		})
+		}),
+		isLoading: function() {
+			return this.results.filter(result => result.loading).length > 0
+		}
 	},
 	methods: {
 		handleDelete(uid) {
@@ -126,6 +172,7 @@ export default {
 		handleIncrement() {
 			this.$store.commit('newTerm', '')
 		},
+		// ToDo: Move to VUEX
 		toggleSideBar() {
 			document.querySelector('aside').classList.toggle('js-active')
 			document.querySelector('main').classList.toggle('js-active')
@@ -160,7 +207,7 @@ export default {
 	display: flex;
 }
 
-h1.title{
+h1.title {
 	margin: 5rem 0;
 	font-weight: 300;
 	font-size: 1rem;
@@ -225,7 +272,6 @@ aside {
 		margin-top: 1rem;
 		button {
 			flex-basis: 100%;
-
 		}
 	}
 }
@@ -304,11 +350,12 @@ button {
 	}
 }
 
-.loading{
+.spinner {
 	position: fixed;
-	top:50%;
-	left:50%;
+	top: 50%;
+	left: 50%;
 	transform: translate(-50%, -50%);
+	z-index: 1000;
 }
 
 svg {

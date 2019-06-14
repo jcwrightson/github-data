@@ -4,3 +4,19 @@ export const uuidv4 = () => {
 			.toString(16)
 	)
 }
+
+export const roundToTwo = (num)  =>{
+	return +(Math.round(num + 'e+2') + 'e-2')
+}
+export const prettyValue = (value) =>{
+	
+	if (value > 1000000) {
+		return `${roundToTwo(value / 1000000)}m`
+	}
+
+	if (value > 1000) {
+		return `${roundToTwo(value / 1000)}k`
+	}
+
+	return `${roundToTwo(value)}`
+}

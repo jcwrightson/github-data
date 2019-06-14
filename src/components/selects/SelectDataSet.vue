@@ -1,5 +1,5 @@
 <template>
-  <select v-model="selectedQuery">
+  <select v-model="selectedQuery"  @change="onSelect">
     <option v-for="(query, index) in queries" :value="query.parent" :key="`SQ_${index}`">{{query.label}}</option>
   </select>
 </template>
@@ -18,6 +18,18 @@ export default {
 				return this.search.selectedQuery
 			}
 		}
+	},
+	methods:{
+		onSelect:function(e){
+			if(e.target.value === 'custom'){
+				this.toggleSideBar()
+			}
+		},
+		// ToDo: Move to VUEX
+		toggleSideBar() {
+			document.querySelector('aside').classList.toggle('js-active')
+			document.querySelector('main').classList.toggle('js-active')
+		},
 	}
 }
 </script>
