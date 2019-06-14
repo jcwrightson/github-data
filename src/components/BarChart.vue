@@ -43,7 +43,7 @@
               height="160px"
               requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"
             >
-              <div xmlns="http://www.w3.org/1999/xhtml">{{prettyValue(result.value)}}</div>
+              <div xmlns="http://www.w3.org/1999/xhtml">{{prettyValue(result.value[search.selectedType])}}</div>
             </foreignObject>
           </g>
         </template>
@@ -67,7 +67,7 @@ export default {
 		}),
 		sortByLargestResult: function() {
 			const results = this.results
-			return results.sort((a, b) => b.value - a.value)
+			return results.sort((a, b) => b.value[this.search.selectedType] - a.value[this.search.selectedType])
 		},
 		isLoading: function() {
 			return this.results.filter(result => result.loading).length > 0
@@ -106,10 +106,10 @@ export default {
 			let largestResult = 0
 
 			if (this.results.length > 1) {
-				largestResult = this.sortByLargestResult[0].value
+				largestResult = this.sortByLargestResult[0].value[this.search.selectedType]
 			}
 
-			const proportion = largestResult / result.value
+			const proportion = largestResult / result.value[this.search.selectedType]
 
 			const height = Math.floor(this.chart.height / proportion)
 
@@ -127,7 +127,7 @@ export default {
 		},
 		getGradiatedColor(result) {
 			const proportion = this.chart.height / this.getHeight(result)
-			return `hsla(180, 40%, ${80 / proportion}%, 1)`
+			return `hsla(180, 40%, ${95 / proportion}%, 1)`
 		},
 		animate() {
 			const bar = document.querySelectorAll('.rect')

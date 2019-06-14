@@ -76,7 +76,9 @@ export default {
 				this.$store.dispatch('HANDLE_RESULT', {
 					query: this.search.term,
 					type: this.searchType,
-					value: this.search.results,
+					value: {
+						[this.searchType]: this.search.results
+					},
 					uid: this.uid,
 					loading: false
 				})
@@ -99,7 +101,9 @@ export default {
 			this.$store.dispatch('HANDLE_RESULT', {
 					query: this.search.term,
 					type: this.searchType,
-					value: 0,
+					value: {
+						[this.searchType]: 0
+					},
 					uid: this.uid,
 					loading: true
 				})
