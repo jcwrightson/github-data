@@ -85,7 +85,7 @@ export default {
 				})
 			},
 			error(error) {
-				console.error('ERROR: ', error)
+				throw(error)
 			},
 			skip() {
 				//Allow disable / enable fetching
