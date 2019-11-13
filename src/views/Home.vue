@@ -231,22 +231,22 @@ aside,
 main {
 	display: flex;
 	flex-direction: column;
-
 	transition: left 200ms ease-in-out;
 }
 
 aside.container {
 	justify-content: space-between;
 	align-items: flex-start;
-	width: 300px;
+	width: 350px;
+	padding-top: 1.5rem;
 }
 
 aside {
 	position: fixed;
 	min-height: 100vh;
-	background-color: #222;
+	background-color: rgb(83, 83, 83);
 	color: white;
-	left: -300px;
+	left: -350px;
 
 	&.js-active {
 		left: 0;
@@ -264,10 +264,12 @@ aside {
 
 	.block {
 		width: 100%;
+		
 
 		.terms {
 			overflow-y: auto;
-			max-height: 600px;
+			max-height: 800px;
+			padding-right: 1rem;
 		}
 	}
 
@@ -292,7 +294,7 @@ main {
 	}
 
 	&.js-active {
-		left: 300px;
+		left: 350px;
 	}
 
 	position: absolute;
@@ -338,7 +340,7 @@ button {
 .top {
 	margin: 0;
 	background-color: #222;
-	padding: 1rem 2rem;
+	padding: .5rem 2rem;
 	color: white;
 	svg {
 		width: 24px;
@@ -371,5 +373,6 @@ button {
 svg {
 	overflow: visible;
 }
+
 </style>
 
