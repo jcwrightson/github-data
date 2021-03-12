@@ -14,7 +14,7 @@
           cx="50"
           cy="50"
           fill="none"
-          stroke="#333"
+          stroke="#45a1a1"
           stroke-width="6"
           r="35"
           stroke-dasharray="164.93361431346415 56.97787143782138"
@@ -69,7 +69,7 @@
               transform="translate(-2.271 -2)"
             ></path>
           </svg>
-          <h1>Github Data</h1>
+          <h1>Github Data &mdash; {{chartTitle()}}</h1>
         </div>
         <div class="flex-row">
           <div class="selectBox">
@@ -94,9 +94,7 @@
       </div>
       <div class="content">
         <template v-if="results.length">
-          <div>
-            <h1 class="title">{{chartTitle()}}</h1>
-          </div>
+          
           <template v-if="chart.type === 'bar'">
             <BarChart :chart="chart" :loading="loading" :results="results"/>
           </template>
@@ -188,15 +186,16 @@ export default {
 			document.querySelector('main').classList.toggle('js-active')
 		},
 		chartTitle() {
-			return `Showing ${this.selectedScope} by ${this.selectedType}`
+			return `${this.selectedScope.toUpperCase()} by ${this.selectedType.toUpperCase()}`
 		}
 	},
 	mounted() {
+		const shim = 500
 		const content = document.querySelector('.content')
 		const contentWidth = content.clientWidth || content.innerWidth
-		this.chart = { ...this.chart, width: contentWidth - 230 }
+		this.chart = { ...this.chart, width: contentWidth - shim }
 		window.addEventListener('resize', () => {
-			this.chart = { ...this.chart, width: contentWidth - 300 }
+			this.chart = { ...this.chart, width: contentWidth - shim }
 		})
 		document.querySelector('.content').addEventListener('click', () => {
 			if (
@@ -313,7 +312,7 @@ main {
 	align-items: center;
 	justify-content: center;
 	height: 100%;
-	background-color: rgb(12, 12, 12);
+	background-color: rgb(27, 27, 27);
 	color: #fff;
 }
 
@@ -322,9 +321,9 @@ select,
 button {
 	padding: 0.5rem 0.8rem;
 	background-color: transparent;
-	border: 1px solid white;
+	border: 1px solid rgba(255, 255, 255, 0.2);
 	color: #fff;
-	border-radius: 6px;
+	border-radius: 4px;
 	font-family: 'Inconsolata';
 
 	option {
@@ -340,7 +339,7 @@ button {
 .top {
 	margin: 0;
 	background-color: #222;
-	padding: .5rem 2rem;
+	padding: 0 2rem;
 	color: white;
 	svg {
 		width: 24px;
@@ -368,6 +367,7 @@ button {
 	left: 50%;
 	transform: translate(-50%, -50%);
 	z-index: 1000;
+	width: 35px;
 }
 
 svg {
