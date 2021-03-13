@@ -4,13 +4,13 @@ This app harnesses the GitHub GraphQL API to search for terms such as programmin
 
 The results are then displayed visually.
 
-DEMO: https://madebywrightson.com/github-data
+DEMO: https://jcwrightson.com/github-data
 
 ## Charts
 
 - Bar (SVG)
 - Pie / Donut (D3.js)
-- Point (CSS)
+- Point (CSS) (deprecated)
 
 
 ## Development
