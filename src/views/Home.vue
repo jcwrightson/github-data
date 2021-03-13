@@ -215,7 +215,6 @@ export default {
 		}
 	},
 	mounted() {
-		console.log(process.env)
 		const shim = 500
 		const content = document.querySelector('.content')
 		const contentWidth = content.clientWidth || content.innerWidth
