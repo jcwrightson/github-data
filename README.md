@@ -17,7 +17,7 @@ DEMO: https://jcwrightson.com/github-data
 
 Include a `.env.local` file in the project root with a personal access token with public scope:
 
-`VUE_APP_GITHUB_TOKEN=xxxxxxxxxxxxxxxxx`
+`VUE_APP_TOKEN=xxxxxxxxxxxxxxxxx`
 
 ## Project setup
 ```
