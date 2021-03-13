@@ -14,7 +14,7 @@ Vue.config.productionTip = false
 const httpLink = new HttpLink({
   uri: 'https://api.github.com/graphql',
   headers: {
-    Authorization: `bearer ${process.env.VUE_APP_GITHUB_TOKEN}`
+    Authorization: `bearer ${process.env.NODE_ENV === "production" ? process.env.TOKEN : process.env.VUE_APP_GITHUB_TOKEN}`
   }
 })
 
