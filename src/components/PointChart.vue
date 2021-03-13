@@ -113,8 +113,8 @@ export default {
 				background-color: #ff9901 !important;
 				border: 1px solid #fff !important;
 
-				width: 12px;
-				height: 12px;
+				width: 8px;
+				height: 8px;
 			}
 
 			.label {

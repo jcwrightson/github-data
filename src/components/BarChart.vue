@@ -1,57 +1,64 @@
 <template>
-  <div class="chart">
-    <template v-if="results.length && !isLoading">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-        xmlns:ev="http://www.w3.org/2001/xml-events"
-        :width="`${chart.width}px`"
-        :height="`${chart.height}px`"
-      >
-        <template v-for="(result, index) in sortByLargestResult">
-          <g
-            :key="`bar_${result.uid}`"
-            requiredFeatures="http://www.w3.org/Graphics/SVG/feature/1.2/#TextFlow"
-          >
-            <rect
-              class="rect"
-              :width="`${getWidth()}px`"
-              :height="getHeight(result)"
-              :x="0"
-              :y="`${chart.height}px`"
-              :fill="getColor(result, index)"
-            ></rect>
+	<div class="chart">
+		<template v-if="results.length && !isLoading">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xmlns:ev="http://www.w3.org/2001/xml-events"
+				:width="`${chart.width}px`"
+				:height="`${chart.height}px`"
+			>
+				<template v-for="(result, index) in sortByLargestResult">
+					<g
+						:key="`bar_${result.uid}`"
+						requiredFeatures="http://www.w3.org/Graphics/SVG/feature/1.2/#TextFlow"
+					>
+						<rect
+							class="rect"
+							:width="`${getWidth()}px`"
+							:height="getHeight(result)"
+							:x="0"
+							:y="`${chart.height}px`"
+							:fill="getColor(result, index)"
+						></rect>
 
-            <!-- ToDo Title and value have switched places -->
+						<!-- ToDo Title and value have switched places -->
 
-            <text
-              class="label value"
-              height="20px"
-              :width="`${getWidth()}px`"
-              :x="`${getX(index)}px`"
-              fill="#ff9901"
-            >{{result.query}}</text>
+						<text
+							class="label value"
+							height="20px"
+							:width="`${getWidth()}px`"
+							:x="`${getX(index)}px`"
+							
+						>
+							{{ result.query }}
+						</text>
 
-            <foreignObject
-              class="label title"
-              :x="0"
-              :y="chart.height"
-              :width="`${getWidth()}px`"
-              height="160px"
-              requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"
-            >
-              <div xmlns="http://www.w3.org/1999/xhtml">
-                <template
-                  v-if="result.value[search.selectedType]"
-                >{{prettyValue(result.value[search.selectedType])}}</template>
-                <template v-else>...</template>
-              </div>
-            </foreignObject>
-          </g>
-        </template>
-      </svg>
-    </template>
-  </div>
+						<foreignObject
+							class="label title"
+							:x="0"
+							:y="chart.height"
+							:width="`${getWidth()}px`"
+							height="160px"
+							requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"
+						>
+							<div xmlns="http://www.w3.org/1999/xhtml">
+								<template
+									v-if="result.value[search.selectedType]"
+									>{{
+										prettyValue(
+											result.value[search.selectedType]
+										)
+									}}</template
+								>
+								<template v-else>...</template>
+							</div>
+						</foreignObject>
+					</g>
+				</template>
+			</svg>
+		</template>
+	</div>
 </template>
 
 <script>
@@ -136,7 +143,7 @@ export default {
 		},
 		getColor(result, index) {
 			const step = (100 / this.results.length) * index
-			return `hsla(180, 40%, ${95 - step}%, 1)`
+			return `hsla(180, 80%, ${90 - step}%, 1)`
 		},
 		animate() {
 			const bar = document.querySelectorAll('.rect')
@@ -181,15 +188,18 @@ export default {
 </script>
 
 <style lang="scss">
+$main: #ffaf01;
 svg {
 	.label {
 		text-transform: uppercase;
 		font-family: monospace;
-		color: #fff !important;
 
-		&.value {
-			display: none;
+		
+		&.title {
+			fill: $main;
 		}
+
+
 	}
 
 	foreignObject {
@@ -204,17 +214,30 @@ svg {
 	g:hover {
 		cursor: pointer;
 		.rect {
-			fill: #ff9901;
+			fill: $main;
 		}
 		.label {
-			color: #ff9901;
+			color: $main;
 
-			&.value {
+			&.value,
+			&.title {
 				display: block;
-				color: #ff9901;
+				color: $main;
 			}
+		}
+	}
+
+	.value,
+	.title {
+		&.active {
+			display: block;
+			color: $main;
+		}
+	}
+	.rect{
+		&.active{
+			fill: $main;
 		}
 	}
 }
 </style>
-

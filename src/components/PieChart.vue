@@ -52,7 +52,7 @@ export default {
 		},
 		getColor(result) {
 			const step = (100 / this.results.length) * result.index
-			return `hsla(180, 40%, ${95 - step}%, 1)`
+			return `hsla(180, 80%, ${90 - step}%, 1)`
 		},
 		createArc(slice) {
 			const arc = d3
@@ -83,16 +83,17 @@ export default {
 }
 </script>
 <style lang="scss">
+$main: #ffaf01;
 .label {
-	fill: #ff9901;
+	fill: $main;
 }
 text {
 	display: none;
 }
 .slice:hover {
 	path {
-		fill: #ff9901;
-		stroke: #ff9901;
+		fill: $main;
+		stroke: $main;
 	}
 	text {
 		display: block;
