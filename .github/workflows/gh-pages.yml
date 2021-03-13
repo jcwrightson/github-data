@@ -22,7 +22,7 @@ jobs:
                   npm install
                   npm run build
               env:
-                  VUE_APP_TOKEN: ${{ env.TOKEN }}
+                  VUE_APP_TOKEN: ${{ secrets.TOKEN }}
 
             - name: Deploy
               uses: JamesIves/github-pages-deploy-action@releases/v3
