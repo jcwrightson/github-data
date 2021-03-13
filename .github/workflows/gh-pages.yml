@@ -23,9 +23,8 @@ jobs:
         npm run build
 
     - name: Deploy
-      uses: Cecilapp/GitHub-Pages-deploy@3.1.0
+      uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
-        build_dir: dist
         TOKEN: ${{ secrets.TOKEN }}
         BRANCH: gh-pages
         FOLDER: dist
