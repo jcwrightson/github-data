@@ -72,7 +72,7 @@ export default new Vuex.Store({
 			let exists = false
 			state.queries[state.search.selectedQuery].results.map(r => {
 				if (r.uid === result.uid) {
-					r.value = {...r.value, ...result.value}
+					r.value = { ...r.value, ...result.value }
 					r.query = result.query
 					r.loading = result.loading
 					exists = true

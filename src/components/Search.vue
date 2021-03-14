@@ -1,26 +1,8 @@
 <template>
-  <div class="search">
-    <input
-      type="text"
-      placeholder="term"
-      v-model="search.term"
-      v-on:keydown="handleKeyDown"
-      :class="loading ? 'loading' : ''"
-    >
-
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" v-on:click="handleDelete">
-      <path
-        id="ic_remove_circle_outline_24px"
-        d="M7,11v2H17V11Zm5-9A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm0,18a8,8,0,1,1,8-8A8.011,8.011,0,0,1,12,20Z"
-        transform="translate(-2 -2)"
-      ></path>
-    </svg>
-  </div>
+	<div></div>
 </template>
-
 <script>
 import gql from 'graphql-tag'
-import { clearTimeout, setTimeout } from 'timers'
 
 const Query = gql`
 	query Search($searchTerm: String!, $searchType: SearchType!) {
@@ -85,7 +67,7 @@ export default {
 				})
 			},
 			error(error) {
-				throw(error)
+				throw error
 			},
 			skip() {
 				//Allow disable / enable fetching
@@ -115,20 +97,6 @@ export default {
 
 			//Fetch data
 			this.$apollo.queries.Search.refetch()
-		},
-		handleKeyDown(e) {
-			if (e.key !== 'Tab') {
-				if (this.debounce) {
-					clearTimeout(this.debounce)
-				}
-
-				this.debounce = setTimeout(() => {
-					this.handleSearch()
-				}, 800)
-			}
-		},
-		handleDelete() {
-			this.$emit('delete', this.uid)
 		}
 	},
 	watch: {
@@ -137,7 +105,7 @@ export default {
 			this.handleSearch()
 		}
 	},
-	created() {
+	mounted() {
 		if (this.searchTerm) {
 			this.search = { ...this.search, term: this.searchTerm }
 			this.handleSearch()
@@ -176,4 +144,3 @@ export default {
 	}
 }
 </style>
-
