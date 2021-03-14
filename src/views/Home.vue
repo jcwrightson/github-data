@@ -42,14 +42,11 @@
 				<h1>Terms</h1>
 
 				<div class="terms">
-					<Search
-						v-for="term in terms"
-						v-on:delete="handleDelete"
-						v-on:loading="handleLoading"
-						:key="`TERM_${term.uid}`"
-						:uid="term.uid"
-						:searchType="selectedType"
-						:searchTerm="term.value"
+					<SearchTerm
+						v-for="(term, index) in terms"
+						:index="index"
+						:key="term.uid"
+						:terms="terms"
 						:scope="selectedScope"
 					/>
 				</div>
@@ -143,7 +140,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import Search from '@/components/Search'
+import SearchTerm from '@/components/SearchTerm'
 import BarChart from '@/components/BarChart'
 import PieChart from '@/components/PieChart'
 import PointChart from '@/components/PointChart'
@@ -154,7 +151,7 @@ import SelectScopeType from '@/components/selects/SelectScopeType'
 export default {
 	name: 'home',
 	components: {
-		Search,
+		SearchTerm,
 		BarChart,
 		PieChart,
 		PointChart,
